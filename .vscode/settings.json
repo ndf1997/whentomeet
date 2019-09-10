@@ -1,7 +1,0 @@
-{
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/frontend/node_modules/**": true
-  }
-}
