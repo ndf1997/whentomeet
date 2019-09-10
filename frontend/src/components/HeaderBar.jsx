@@ -1,12 +1,17 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import { makeStyles } from '@material-ui/core/styles';
 import ToolBar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
+    marginBottom: theme.spacing(2),
+  },
+  meetingIcon: {
+    marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
@@ -20,6 +25,7 @@ function HeaderBar() {
     <div className={classes.root}>
       <AppBar position="static">
         <ToolBar>
+          <MeetingRoomIcon className={classes.meetingIcon} />
           <Typography variant="h6" className={classes.title}>
             WhenToMeet
           </Typography>

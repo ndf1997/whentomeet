@@ -1,10 +1,10 @@
 import React from 'react';
-import HeaderBar from './components/HeaderBar';
+import MeetingPage from './pages/meeting/MeetingPage';
 
 function App() {
   return (
     <div className="App">
-      <HeaderBar />
+      <MeetingPage />
     </div>
   );
 }
