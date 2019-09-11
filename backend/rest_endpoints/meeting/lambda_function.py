@@ -17,16 +17,15 @@ def respond(err, res=None):
 
 
 def lambda_handler(event, context):
-    
-		
+    response = ''
     operation = event['httpMethod']
-
-	if operation == 'PUT':
-		response = table.put_item(
-			Item = json.loads(event['body'])
-			)
-
-	#print("Received event: " + json.dumps(event, indent=2))
-
-
-    return respond(None, operations[operation](dynamo, payload))
+    print("Received event: " + json.dumps(event, indent=2))
+    if operation == 'POST':
+        response = table.put_item(
+        Item = json.loads(event['body']))
+    if operation == 'GET':
+        response = table.get_item(
+        Key = event['queryStringParameters']
+        )
+    
+    return respond(None, response)
