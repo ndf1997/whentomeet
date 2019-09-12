@@ -1,20 +1,28 @@
 import React from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 import TimeTableCell from './TimeTableCell';
 
 import { days, times } from '../types/constants';
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     width: '40%',
+    marginLeft: theme.spacing(3),
   },
   body: {
     userSelect: 'none',
+  },
+  timeColumn: {
+    padding: 1,
+  },
+  timeText: {
+    fontSize: 11,
   }
 }));
 
@@ -33,7 +41,9 @@ function TimeTable () {
         <TableBody className={classes.body}>
           {times.map((time: string) => (
             <TableRow>
-              <TableCell>{time}</TableCell>
+              <TableCell className={classes.timeColumn}>
+                <Typography className={classes.timeText}>{time}</Typography>
+              </TableCell>
               {days.map((day: string) => <TimeTableCell />)}
             </TableRow>
           ))}
