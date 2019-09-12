@@ -1,30 +1,38 @@
-import React from 'react';
+import React, { useState, MouseEvent} from 'react';
+import clsx from 'clsx';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 
-const initialState = { isSelected: false };
-type State = Readonly<typeof initialState>
+const useStyles = makeStyles(() => createStyles({
+  root: {},
+  selected: {
+    backgroundColor: 'teal',
+  },
+}))
 
-class TimeTableCell extends React.Component {
-  readonly state: State = initialState;
+function TimeTableCell () {
+  const classes = useStyles();
+  const [isSelected, setIsSelected] = useState(false);
 
-  clickHandler = () => {
-    this.setState({ isSelected: !this.state.isSelected });
+  const clickHandler = () => {
+    setIsSelected(!isSelected);
   }
 
-  hoverHandler = (event: React.MouseEvent) => {
+  const hoverHandler = (event: MouseEvent) => {
     if (event.buttons === 1) {
-      this.clickHandler();
+      clickHandler();
     }
   }
 
-  render () {
-    return (
-      <TableCell
-        onClick={this.clickHandler}
-        onMouseEnter={event => this.hoverHandler(event)}
-      >{this.state.isSelected ? 'X' : 'O'}</TableCell>
-    )
-  }
+  return (
+    <TableCell
+      className={clsx(classes.root, {
+        [classes.selected]: isSelected,
+      })}
+      onMouseDown={clickHandler}
+      onMouseEnter={event => hoverHandler(event)}
+    />
+  )
 }
 
 export default TimeTableCell;
