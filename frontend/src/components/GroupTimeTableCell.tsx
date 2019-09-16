@@ -7,22 +7,23 @@ import TimeTableTooltip from './TimeTableTooltip';
 import { Member } from '../types/Member';
 import { Day } from '../types/Day';
 
-function calculatePercentage(day: string, members: Member[], time: string) {
-  let numberSelected: number = 0;
+function findAvailableMembers(day: string, members: Member[], time: string) {
+  let availableMembers: Member[] = [];
   members.forEach((member: Member) => {
     member.days.forEach((d: Day) => {
       if (d.name === day && d.hours.includes(time)) {
-        numberSelected++;
+        availableMembers.push(member);
       }
     })
   });
 
-  return Math.floor((numberSelected / members.length) * 100) + '%';
+  return availableMembers;
 }
 
 function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTypes>) {
   const { day, members, time } = props;
-  const percentage = calculatePercentage(day, members, time)
+  const availableMembers: Member[] = findAvailableMembers(day, members, time);
+  const percentage: string = Math.floor((availableMembers.length / members.length) * 100) + '%';
 
   const classes = makeStyles(() => createStyles({
     cell: {
@@ -40,7 +41,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
   }))();
 
   return (
-    <TimeTableTooltip {...props} percentage={percentage} >
+    <TimeTableTooltip {...props} percentage={percentage} members={availableMembers} >
       <TableCell className={classes.cell}>
       </TableCell>
     </TimeTableTooltip>
