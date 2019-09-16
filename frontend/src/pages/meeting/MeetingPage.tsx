@@ -14,7 +14,7 @@ function MeetingPage() {
           <TimeTable />
         </Grid>
         <Grid item xs={6}>
-          <TimeTable />
+          <TimeTable isGroupTable />
         </Grid>
       </Grid>
     </div>

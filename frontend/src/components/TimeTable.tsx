@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,8 +8,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import TimeTableCell from './TimeTableCell';
+import GroupTimeTableCell from './GroupTimeTableCell';
 
 import { days, times } from '../types/constants';
+import { testMembers } from '../testdata/testMembers';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -26,7 +29,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-function TimeTable () {
+function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
+  const { isGroupTable } = props;
+
   const classes = useStyles();
 
   return (
@@ -44,7 +49,14 @@ function TimeTable () {
               <TableCell className={classes.timeColumn}>
                 <Typography className={classes.timeText}>{time}</Typography>
               </TableCell>
-              {days.map((day: string) => <TimeTableCell />)}
+              {!isGroupTable && days.map((day: string) => <TimeTableCell />)}
+              {isGroupTable && days.map((day: string) => (
+                <GroupTimeTableCell
+                  day={day}
+                  members={testMembers}
+                  time={time}
+                />))
+              }
             </TableRow>
           ))}
         </TableBody>
@@ -52,5 +64,9 @@ function TimeTable () {
     </div>
   );
 }
+
+TimeTable.propTypes = {
+  isGroupTable: PropTypes.bool,
+};
 
 export default TimeTable;
