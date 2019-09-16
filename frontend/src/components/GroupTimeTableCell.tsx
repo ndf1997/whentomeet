@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
+import TimeTableTooltip from './TimeTableTooltip';
 
 import { Member } from '../types/Member';
 import { Day } from '../types/Day';
@@ -21,6 +22,7 @@ function calculatePercentage(day: string, members: Member[], time: string) {
 
 function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTypes>) {
   const { day, members, time } = props;
+  const percentage = calculatePercentage(day, members, time)
 
   const classes = makeStyles(() => createStyles({
     cell: {
@@ -32,14 +34,16 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
         top: 0,
         bottom: 0,
         left: 0,
-        width: calculatePercentage(day, members, time),
+        width: percentage,
       },
     },
   }))();
 
   return (
-    <TableCell className={classes.cell}>
-    </TableCell>
+    <TimeTableTooltip {...props} percentage={percentage} >
+      <TableCell className={classes.cell}>
+      </TableCell>
+    </TimeTableTooltip>
   )
 }
 
