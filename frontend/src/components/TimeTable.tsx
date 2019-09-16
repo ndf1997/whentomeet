@@ -11,6 +11,7 @@ import TimeTableCell from './TimeTableCell';
 import GroupTimeTableCell from './GroupTimeTableCell';
 
 import { days, times } from '../types/constants';
+import { testMembers } from '../testdata/testMembers';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -49,7 +50,13 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
                 <Typography className={classes.timeText}>{time}</Typography>
               </TableCell>
               {!isGroupTable && days.map((day: string) => <TimeTableCell />)}
-              {isGroupTable && days.map((day: string) => <GroupTimeTableCell />)}
+              {isGroupTable && days.map((day: string) => (
+                <GroupTimeTableCell
+                  day={day}
+                  members={testMembers}
+                  time={time}
+                />))
+              }
             </TableRow>
           ))}
         </TableBody>
