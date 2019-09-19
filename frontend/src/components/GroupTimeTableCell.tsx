@@ -32,7 +32,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
       '&::after': {
         content: '""',
         position: 'absolute',
-        background: 'teal',
+        background: percentage === '100%' ? '#8bc34a' : 'teal',
         top: 0,
         bottom: 0,
         left: 0,

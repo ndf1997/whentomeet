@@ -30,7 +30,6 @@ function EnterName(props: InferProps<typeof EnterName.propTypes>) {
           value={name}
           label="Name"
           onChange={textHandler}
-          margin="normal"
         />
       </DialogContent>
       <DialogActions>
