@@ -1,6 +1,9 @@
 import React from 'react';
+import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
+import { Meeting, MeetingPropType } from '../types/Meeting';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -11,21 +14,26 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-function MeetingDetails() {
+function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <Typography variant="h3" gutterBottom >
-        Meeting Title
+        {props.meeting.title}
       </Typography>
       <Typography variant="body1" className={classes.description} >
-        Here's a brief description of the meeting.
-        It'll typically be a couple of lines.
-        It'll wrap around like this. We can change the width of this component if we need to.
+        {props.meeting.description}
+      </Typography>
+      <Typography variant="body1">
+        Location: {props.meeting.location}
       </Typography>
     </div>
   );
+}
+
+MeetingDetails.propTypes = {
+  meeting: MeetingPropType.isRequired,
 }
 
 export default MeetingDetails;
