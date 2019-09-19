@@ -23,7 +23,6 @@ function findAvailableMembers(day: string, members: Member[], time: string) {
 
 function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTypes>) {
   const { day, members, time } = props;
-  const [open, setOpen] = React.useState(false);
   const availableMembers: Member[] = findAvailableMembers(day, members, time);
   const percentage: string = Math.floor((availableMembers.length / members.length) * 100) + '%';
 
@@ -42,23 +41,9 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
     },
   }))();
 
-  function confirmSelection(event: React.MouseEvent) {
-    setOpen(true);
-  }
-
-  function handleSelection(selection: string) {
-    setOpen(false);
-  }
-
   return (
     <TimeTableTooltip {...props} percentage={percentage} members={availableMembers} >
-      <TableCell className={classes.cell} onClick={(event: React.MouseEvent) => confirmSelection(event)}>
-        <ConfirmTime
-          open={open}
-          day={props.day}
-          time={props.time}
-          handleSelection={handleSelection}
-        />
+      <TableCell className={classes.cell} onClick={() => props.handleOpen(`${props.day}, ${props.time}`)}>
       </TableCell>
     </TimeTableTooltip>
   )
@@ -68,6 +53,7 @@ GroupTimeTableCell.propTypes = {
   day: PropTypes.string.isRequired,
   members: PropTypes.array.isRequired,
   time: PropTypes.string.isRequired,
+  handleOpen: PropTypes.func.isRequired,
 }
 
 export default GroupTimeTableCell;
