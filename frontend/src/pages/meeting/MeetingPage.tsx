@@ -19,7 +19,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     const meetingId = match.params.meetingId;
 
     if (typeof meetingId !== 'undefined') {
-      server.get('/meeting/' + meetingId)
+      server.get('/meeting?meeting_id=' + meetingId)
         .then(response => {
           console.log(response);
         })
