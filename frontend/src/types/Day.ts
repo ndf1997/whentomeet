@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export class Day {
   name: string;
   hours: string[];
@@ -7,3 +9,8 @@ export class Day {
     this.hours = hours;
   }
 }
+
+export const DayPropType = PropTypes.shape({
+  name: PropTypes.string,
+  hours: PropTypes.arrayOf(PropTypes.string),
+});
