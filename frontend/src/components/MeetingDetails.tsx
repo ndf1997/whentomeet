@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes, { InferProps } from 'prop-types';
+import { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import { Meeting, MeetingPropType } from '../types/Meeting';
+import { MeetingPropType } from '../types/Meeting';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

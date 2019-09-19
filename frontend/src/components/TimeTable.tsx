@@ -11,6 +11,7 @@ import TimeTableCell from './TimeTableCell';
 import GroupTimeTableCell from './GroupTimeTableCell';
 
 import { days, times } from '../types/constants';
+import { Meeting, MeetingPropType } from '../types/Meeting';
 import { testMembers } from '../testdata/testMembers';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -67,6 +68,7 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
 
 TimeTable.propTypes = {
   isGroupTable: PropTypes.bool,
+  meeting: MeetingPropType.isRequired,
 };
 
 export default TimeTable;
