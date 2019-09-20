@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 const useStyles = makeStyles(() => createStyles({
   root: {},
   selected: {
-    backgroundColor: 'teal',
+    backgroundColor: '#8bc34a',
   },
 }))
 

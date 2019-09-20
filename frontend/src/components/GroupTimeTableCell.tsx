@@ -3,6 +3,7 @@ import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TimeTableTooltip from './TimeTableTooltip';
+import ConfirmTime from './ConfirmTime';
 
 import { Member } from '../types/Member';
 import { Day } from '../types/Day';
@@ -31,7 +32,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
       '&::after': {
         content: '""',
         position: 'absolute',
-        background: 'teal',
+        background: percentage === '100%' ? '#8bc34a' : 'teal',
         top: 0,
         bottom: 0,
         left: 0,
@@ -42,7 +43,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
 
   return (
     <TimeTableTooltip {...props} percentage={percentage} members={availableMembers} >
-      <TableCell className={classes.cell}>
+      <TableCell className={classes.cell} onClick={() => props.handleOpen(`${props.day}, ${props.time}`)}>
       </TableCell>
     </TimeTableTooltip>
   )
@@ -52,6 +53,7 @@ GroupTimeTableCell.propTypes = {
   day: PropTypes.string.isRequired,
   members: PropTypes.array.isRequired,
   time: PropTypes.string.isRequired,
+  handleOpen: PropTypes.func.isRequired,
 }
 
 export default GroupTimeTableCell;

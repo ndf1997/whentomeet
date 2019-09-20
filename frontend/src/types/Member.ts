@@ -1,4 +1,5 @@
-import { Day } from './Day';
+import PropTypes from 'prop-types';
+import { Day, DayPropType } from './Day';
 
 export class Member {
   memberId: string;
@@ -12,3 +13,9 @@ export class Member {
     this.days = days;
   }
 }
+
+export const MemberPropType = PropTypes.shape({
+  memberId: PropTypes.string,
+  name: PropTypes.string,
+  hours: PropTypes.arrayOf(DayPropType),
+});

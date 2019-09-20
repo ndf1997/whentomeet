@@ -1,12 +1,17 @@
-import React from 'react';
-import Polls from './Polling/PollingForm';
-// import Polls from './pages/HomePage/HomePage';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage/HomePage';
+import MeetingPage from './pages/meeting/MeetingPage';
+import MeetingForm from './pages/meetingform/MeetingForm';
 
 function App() {
   return (
-    <div className="App">
-      <Polls />
-    </div>
+    <Router>
+      <div className="App">
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/create" component={MeetingForm} />
+        <Route path="/meeting/:meetingId" component={MeetingPage} />
+      </div>
+    </Router>
   );
 }
 

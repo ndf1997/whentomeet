@@ -1,3 +1,5 @@
+export const serverURL: string = 'https://rvpqx6w707.execute-api.us-east-2.amazonaws.com/dev/';
+
 export const days: string[] = [
   'Sunday',
   'Monday',

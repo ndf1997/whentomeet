@@ -1,4 +1,5 @@
-import { Member } from './Member';
+import PropTypes from 'prop-types';
+import { Member, MemberPropType } from './Member';
 
 export class Meeting {
   meetingId: string;
@@ -7,8 +8,8 @@ export class Meeting {
   location: string;
   members: Member[];
 
-  constructor(meetingId: string, title: string, description: string,
-    location: string, members: Member[]) {
+  constructor(meetingId: string = '', title: string = '', description: string = '',
+    location: string = '', members: Member[] = []) {
       this.meetingId = meetingId;
       this.title = title;
       this.description = description;
@@ -16,3 +17,11 @@ export class Meeting {
       this.members = members;
     }
 }
+
+export const MeetingPropType = PropTypes.shape({
+  meetingId: PropTypes.string,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  location: PropTypes.string,
+  members: PropTypes.arrayOf(MemberPropType),
+});
