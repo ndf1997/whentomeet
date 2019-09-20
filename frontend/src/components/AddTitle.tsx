@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import PropTypes, {InferProps} from 'prop-types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -12,27 +13,30 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-function AddTitle() {
+function AddTitle(props: InferProps<typeof AddTitle.propTypes>) {
   const classes = useStyles();
   const [name, setName] = React.useState('');
 
-  function textHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    setName(event.target.value);
-  }
+  
 
   return (
     <div>
       <TextField
         id="title"
         className={classes.textField}
-        value={name}
+        value={props.existingTitle}
         label="Meeting Name"
-        onChange={textHandler}
+        onChange={props.titleHandler}
         margin="normal"
         variant="filled"
+        required
       />
     </div>
   );
 }
 
+AddTitle.propTypes = {
+  titleHandler: PropTypes.func.isRequired,
+  existingTitle: PropTypes.string,
+}
 export default AddTitle;

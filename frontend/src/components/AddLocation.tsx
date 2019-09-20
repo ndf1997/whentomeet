@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import PropTypes, {InferProps} from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -11,13 +12,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-function AddLocation() {
+function AddLocation(props: InferProps<typeof AddLocation.propTypes>) {
   const classes = useStyles();
   const [name, setName] = React.useState('');
 
-  function textHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    setName(event.target.value);
-  }
+  
 
   return (
     <div>
@@ -26,12 +25,16 @@ function AddLocation() {
         className={classes.textField}
         value={name}
         label="Location"
-        onChange={textHandler}
+        onChange={props.locationHandler}
         margin="normal"
         variant="filled"
+        required
       />
     </div>
   );
 }
 
+AddLocation.propTypes = {
+  locationHandler: PropTypes.func.isRequired,
+}
 export default AddLocation;
