@@ -1,10 +1,11 @@
 import React from 'react';
-import HomePage from './pages/HomePage/HomePage';
+import Polls from './Polling/PollingForm';
+// import Polls from './pages/HomePage/HomePage';
 
 function App() {
   return (
     <div className="App">
-      <HomePage />
+      <Polls />
     </div>
   );
 }
