@@ -45,7 +45,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   return (
     <div className="MeetingPage">
-      <HeaderBar />
+      <HeaderBar meetingId={meetingId}/>
       <EnterName createNewUser={(name: string) => createNewUser(name)} />
       <MeetingDetails meeting={meeting} />
       <Grid container spacing={3}>

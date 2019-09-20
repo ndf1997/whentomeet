@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface MeetingFormProps {
   history: History<LocationState>;
+  
 }
 
 function MeetingForm(props: MeetingFormProps) {
@@ -69,7 +70,7 @@ function MeetingForm(props: MeetingFormProps) {
             </Grid>
             <Grid item xs={7}>
               <Paper className={classes.paper}>
-                <Button variant="outlined" type="submit">
+                <Button variant="outlined" type="submit" className={classes.button}>
                   Create Meeting
                 </Button>
               </Paper>

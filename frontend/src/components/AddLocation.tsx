@@ -23,7 +23,7 @@ function AddLocation(props: InferProps<typeof AddLocation.propTypes>) {
       <TextField
         id="location"
         className={classes.textField}
-        value={name}
+        value={props.existingLocation}
         label="Location"
         onChange={props.locationHandler}
         margin="normal"
@@ -36,5 +36,6 @@ function AddLocation(props: InferProps<typeof AddLocation.propTypes>) {
 
 AddLocation.propTypes = {
   locationHandler: PropTypes.func.isRequired,
+  existingLocation: PropTypes.string,
 }
 export default AddLocation;
