@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginLeft: theme.spacing(1),
   },
   textField: {
-    width: '50%',
+    width: "30%",
     marginLeft: theme.spacing(1),
   }
 }));
@@ -29,6 +29,7 @@ function AddDescription(props: InferProps<typeof AddDescription.propTypes>) {
         onChange={props.descriptionHandler}
         margin="normal"
         variant="filled"
+        required
       />
     </div>
   );

@@ -28,6 +28,7 @@ function AddLocation(props: InferProps<typeof AddLocation.propTypes>) {
         onChange={props.locationHandler}
         margin="normal"
         variant="filled"
+        required
       />
     </div>
   );
