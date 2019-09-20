@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import PropTypes, {InferProps} from 'prop-types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -12,13 +13,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-function AddDescription() {
+function AddDescription(props: InferProps<typeof AddDescription.propTypes>) {
   const classes = useStyles();
   const [name, setName] = React.useState('');
-
-  function textHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    setName(event.target.value);
-  }
 
   return (
     <div>
@@ -29,12 +26,16 @@ function AddDescription() {
         label="Description"
         multiline={true}
         inputProps={{maxLength:500}}
-        onChange={textHandler}
+        onChange={props.descriptionHandler}
         margin="normal"
         variant="filled"
       />
     </div>
   );
+}
+
+AddDescription.propTypes = {
+  descriptionHandler: PropTypes.func.isRequired,
 }
 
 export default AddDescription;
