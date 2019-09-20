@@ -46,8 +46,8 @@ function HomePage() {
     </React.Fragment>
     <body style={ sectionStyle }>
     <Container maxWidth="sm">
-    <Button variant="contained" color="primary" className={classes.button} style={{margin: '20px', height: '50px', right: '200px'}}>
-        Star Planning
+    <Button variant="contained" color="primary" className={classes.button} style={{margin: '20px', height: '60px', right: '200px'}}>
+        Start Planning
         </Button>
     </Container>
     </body>
