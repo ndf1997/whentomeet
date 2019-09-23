@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import HeaderBar from '../../components/HeaderBar';
 import MeetingDetails from '../../components/MeetingDetails';
 import TimeTable from '../../components/TimeTable';
@@ -16,6 +17,8 @@ type TParams =  { meetingId: string };
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const [meeting, setMeeting] = useState(new Meeting());
   const [member, setMember] = useState(new Member());
+  const [loadingMeeting, setLoadingMeeting] = useState(true);
+  const [loadingMember, setLoadingMember] = useState(true);
   const server = axios.create({
     baseURL: serverURL,
   });
@@ -30,7 +33,8 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           setMeeting(new Meeting(
             m.meeting_id, m.title, m.description, m.location, []
           ));
-        })
+          setLoadingMeeting(false);
+        });
       
       const memberId: string | null = localStorage.getItem(`meetingId:${meetingId}`)
       if (memberId !== null) {
@@ -40,7 +44,10 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             setMember(new Member(
               m.member_id, m.member_name, []
             ));
-          })
+            setLoadingMember(false);
+          });
+      } else {
+        setLoadingMember(false);
       }
     }
   }
@@ -59,8 +66,23 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
           localStorage.setItem(`meetingId:${meetingId}`, memberId);
           setMember(new Member(memberId, name));
-        })
+        });
     }
+  }
+
+  if (loadingMeeting || loadingMember) {
+    return (
+      <div className="MeetingPage">
+        <HeaderBar />
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+        >
+          <CircularProgress/>
+        </Grid>
+      </div>
+    );
   }
 
   return (
