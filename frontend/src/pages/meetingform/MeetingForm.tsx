@@ -8,17 +8,24 @@ import { History, LocationState } from "history";
 import HeaderBar from '../../components/HeaderBar';
 import Paper from '@material-ui/core/Paper';
 import { Grid } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
-    flexGrow: 1,
+    marginLeft: theme.spacing(66),
+    marginRight: theme.spacing(66),
+    marginTop: theme.spacing(12),
+    textAlign: 'center'
   },
   button: {
-    margin: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
   },
   paper: {
     textAlign: 'center',
     square: 'true',
+    alignItems: 'flex'
+    
   }
 }));
 
@@ -51,30 +58,30 @@ function MeetingForm(props: MeetingFormProps) {
     <HeaderBar />
     <form onSubmit={onSubmit}>
         <div className={classes.root}>
-          <Grid container spacing={0} justify="center">
-            <Grid item xs={7}>
-              <Paper className={classes.paper}>
+          <Typography variant="h3" gutterBottom >
+            Create Meeting
+          </Typography>
+          <Paper className={classes.paper}>
+          
+              
                 <AddTitle titleHandler={titleHandler}/>
-              </Paper>
-            </Grid>
-            <Grid item xs={7}>
-              <Paper className={classes.paper}>
+              
+            
+              
                 <AddDescription descriptionHandler={descriptionHandler}/>
-              </Paper>
-            </Grid>
-            <Grid item xs={7}>
-              <Paper className={classes.paper}>
+              
+            
+              
                 <AddLocation locationHandler={locationHandler}/>
-              </Paper>
-            </Grid>
-            <Grid item xs={7}>
-              <Paper className={classes.paper}>
-                <Button variant="outlined" type="submit">
+             
+           
+              
+                <Button variant="outlined" type="submit" className={classes.button}>
                   Create Meeting
                 </Button>
-              </Paper>
-            </Grid>
-          </Grid>
+             
+            
+          </Paper>
         </div>
       </form>
     </div>

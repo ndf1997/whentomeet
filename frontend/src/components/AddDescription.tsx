@@ -8,8 +8,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginLeft: theme.spacing(1),
   },
   textField: {
-    width: "30%",
-    marginLeft: theme.spacing(1),
+    width: "90%",
   }
 }));
 
@@ -22,7 +21,7 @@ function AddDescription(props: InferProps<typeof AddDescription.propTypes>) {
       <TextField
         id="description"
         className={classes.textField}
-        value={name}
+        value={props.existingDescription}
         label="Description"
         multiline={true}
         inputProps={{maxLength:500}}
@@ -37,6 +36,7 @@ function AddDescription(props: InferProps<typeof AddDescription.propTypes>) {
 
 AddDescription.propTypes = {
   descriptionHandler: PropTypes.func.isRequired,
+  existingDescription: PropTypes.string,
 }
 
 export default AddDescription;
