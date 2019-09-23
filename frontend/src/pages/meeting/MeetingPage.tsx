@@ -15,6 +15,7 @@ type TParams =  { meetingId: string };
 
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const [meeting, setMeeting] = useState(new Meeting());
+  const [member, setMember] = useState(new Member());
   const server = axios.create({
     baseURL: serverURL,
   });
@@ -30,23 +31,44 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             m.meeting_id, m.title, m.description, m.location, []
           ));
         })
+      
+      const memberId: string | null = localStorage.getItem(`meetingId:${meetingId}`)
+      if (memberId !== null) {
+        server.get('/member?member_id=' + memberId)
+          .then(response => {
+            const m = response.data.Item;
+            setMember(new Member(
+              m.member_id, m.member_name, []
+            ));
+          })
+      }
     }
   }
   useEffect(() => componentDidMount(), [])
 
   function createNewUser(name: string) {
-    const member: Member = new Member('', name, []);
     if (typeof meetingId !== 'undefined') {
-      console.log(JSON.stringify(member));
-      // TODO send new user to server
-      // server.post('/member?meeting_id=' + meetingId)
+      const newMember = {
+        meeting_id: meetingId,
+        member_name: name,
+      };
+
+      server.post('/member', JSON.stringify(newMember))
+        .then(response => {
+          const memberId: string = response.data.member_id;
+
+          localStorage.setItem(`meetingId:${meetingId}`, memberId);
+          setMember(new Member(memberId, name));
+        })
     }
   }
 
   return (
     <div className="MeetingPage">
       <HeaderBar />
-      <EnterName createNewUser={(name: string) => createNewUser(name)} />
+      {member.memberId === '' &&
+        <EnterName createNewUser={(name: string) => createNewUser(name)} />
+      }
       <MeetingDetails meeting={meeting} />
       <Grid container spacing={3}>
         <Grid item xs={6}>

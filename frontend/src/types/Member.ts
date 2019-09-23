@@ -6,7 +6,7 @@ export class Member {
   name: string;
   days: Day[];
 
-  constructor(memberId: string, name: string, days: Day[]) {
+  constructor(memberId: string = '', name: string = '', days: Day[] = []) {
     this.memberId = memberId;
     this.name = name;
     this.days = days;
