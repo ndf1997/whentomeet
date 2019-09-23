@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface MeetingFormProps {
   history: History<LocationState>;
+  
 }
 
 function MeetingForm(props: MeetingFormProps) {
