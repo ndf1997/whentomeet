@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +11,7 @@ import EnterName from '../../components/EnterName';
 import { serverURL } from '../../types/constants';
 import { Meeting } from '../../types/Meeting';
 import { Member } from '../../types/Member';
+import { Day } from '../../types/Day';
 
 type TParams =  { meetingId: string };
 
@@ -23,7 +24,9 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     baseURL: serverURL,
   });
 
-  const meetingId = match.params.meetingId;
+  let memberData: Member = new Member();
+
+  const meetingId: string = match.params.meetingId;
 
   function componentDidMount() {
     if (typeof meetingId !== 'undefined') {
@@ -41,9 +44,10 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         server.get('/member?member_id=' + memberId)
           .then(response => {
             const m = response.data.Item;
-            setMember(new Member(
-              m.member_id, m.member_name, []
-            ));
+            memberData = new Member(
+              m.member_id, m.member_name
+            );
+            setMember(memberData);
             setLoadingMember(false);
           });
       } else {
@@ -65,8 +69,20 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           const memberId: string = response.data.member_id;
 
           localStorage.setItem(`meetingId:${meetingId}`, memberId);
-          setMember(new Member(memberId, name));
+          memberData = new Member(memberId, name);
+          setMember(memberData);
         });
+    }
+  }
+
+  function updateTimes(day: string, index: number) {
+    const newHours: Day[] = memberData.days;
+
+    for (let i = 0; i < newHours.length; i++) {
+      const d: Day = newHours[i];
+      if (d.name === day) {
+        newHours[i].hours[index] = !newHours[i].hours[index];
+      }
     }
   }
 
@@ -94,10 +110,19 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       <MeetingDetails meeting={meeting} />
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <TimeTable meeting={meeting} />
+          <TimeTable
+            meeting={meeting}
+            member={member}
+            updateTimes={updateTimes}
+          />
         </Grid>
         <Grid item xs={6}>
-          <TimeTable meeting={meeting} isGroupTable />
+          <TimeTable
+            meeting={meeting}
+            member={member}
+            isGroupTable
+            updateTimes={updateTimes}
+          />
         </Grid>
       </Grid>
     </div>

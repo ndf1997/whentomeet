@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Day, DayPropType } from './Day';
 
+import { days as d } from './constants';
+
 export class Member {
   memberId: string;
   name: string;
@@ -10,6 +12,9 @@ export class Member {
     this.memberId = memberId;
     this.name = name;
     this.days = days;
+    if (days.length === 0) {
+      this.days = d.map(day => new Day(day));
+    }
   }
 }
 
