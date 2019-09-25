@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
-  const { isGroupTable } = props;
+  const { meeting, member, isGroupTable, updateTimes } = props;
   const [open, setOpen] = React.useState(false);
   const [time, setTime] = React.useState('');
 
@@ -69,16 +69,16 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
               </TableCell>
               {!isGroupTable && days.map((day: string) => (
                 <TimeTableCell
-                  member={props.member}
+                  member={member}
                   day={day}
                   index={index}
-                  updateTimes={props.updateTimes}
+                  updateTimes={updateTimes}
                 />))
               }
               {isGroupTable && days.map((day: string) => (
                 <GroupTimeTableCell
                   day={day}
-                  members={[]}
+                  members={meeting.members}
                   time={time}
                   index={index}
                   handleOpen={handleOpen}

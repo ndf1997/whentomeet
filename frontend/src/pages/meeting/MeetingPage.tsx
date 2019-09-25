@@ -31,27 +31,51 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function componentDidMount() {
     if (typeof meeting_id !== 'undefined') {
+      // Get the meeting by meeting_id
       server.get('/meeting?meeting_id=' + meeting_id)
         .then(response => {
-          const m = response.data.Item;
-          setMeeting(new Meeting(
-            m.meeting_id, m.title, m.description, m.location, []
-          ));
-          setLoadingMeeting(false);
+          const meet = response.data.Item;
+          // Get the members by meeting_id
+          server.get('/member?meeting_id=' + meeting_id)
+            .then(response => {
+              const memberList = response.data.members;
+              const members: Member[] = [];
+
+              for (let i = 0; i < memberList.length; i++ ) {
+                const mem = memberList[i];
+                const addMember = new Member(mem.member_id, mem.name);
+                const days: Day[] = [];
+
+                for (let j = 0; j < mem.days.length; j++) {
+                  days.push(new Day(mem.days[j].name, mem.days[j].hours));
+                }
+
+                members.push(addMember);
+              }
+
+              setMeeting(new Meeting(
+                meet.meeting_id, meet.title, meet.description, meet.location, memberList
+              ));
+              setLoadingMeeting(false);
+            })
         });
       
       const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`);
       if (member_id !== null) {
+        // Get the current member
         server.get('/member?member_id=' + member_id)
         .then(response => {
             const m = response.data;
             const days: Day[] = [];
+
             for (let i = 0; i < m.days.length; i++) {
               days.push(new Day(m.days[i].name, m.days[i].hours));
             }
+
             memberData = new Member(
               m.member_id, m.name, days
             );
+            
             setMember(memberData);
             setLoadingMember(false);
           });
@@ -69,6 +93,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         member_name: name,
       };
 
+      // Create new User
       server.post('/member', JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;

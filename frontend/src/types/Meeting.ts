@@ -19,9 +19,9 @@ export class Meeting {
 }
 
 export const MeetingPropType = PropTypes.shape({
-  meeting_id: PropTypes.string,
-  title: PropTypes.string,
-  description: PropTypes.string,
-  location: PropTypes.string,
-  members: PropTypes.arrayOf(MemberPropType),
+  meeting_id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  location: PropTypes.string.isRequired,
+  members: PropTypes.arrayOf(MemberPropType.isRequired).isRequired,
 });
