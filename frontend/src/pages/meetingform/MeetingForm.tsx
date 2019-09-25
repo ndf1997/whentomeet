@@ -1,16 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddTitle from '../../components/AddTitle';
 import AddDescription from '../../components/AddDescription';
 import AddLocation from '../../components/AddLocation';
 import Button from '@material-ui/core/Button';
-import { History, LocationState } from "history";
-import {Route, Redirect, withRouter} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import HeaderBar from '../../components/HeaderBar';
 import Paper from '@material-ui/core/Paper';
-import { Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -31,12 +28,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-interface MeetingFormProps {
-  history: History<LocationState>;
-  
-}
-
-function MeetingForm(props: MeetingFormProps) {
+function MeetingForm() {
   const [title, setTitle] = React.useState();
   const [redirect, setRedirect] = React.useState(false);
   const [location, setLocation] = React.useState();
