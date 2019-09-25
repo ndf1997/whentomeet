@@ -38,9 +38,9 @@ interface MeetingFormProps {
 
 function MeetingForm(props: MeetingFormProps) {
   const [title, setTitle] = React.useState();
+  const [redirect, setRedirect] = React.useState(false);
   const [location, setLocation] = React.useState();
   const [description, setDescription] = React.useState();
-  const [redirect, setRedirect] = React.useState(false);
   function titleHandler(event: React.ChangeEvent<HTMLInputElement>) {
     setTitle(event.target.value);
   }
@@ -50,16 +50,21 @@ function MeetingForm(props: MeetingFormProps) {
   function descriptionHandler(event: React.ChangeEvent<HTMLInputElement>) {
     setDescription(event.target.value);
   }
-
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    return (<Redirect to='/meeting/1234'/>);
+    setRedirect(true);
+  }
+  function redirectHandler() {
+    if (redirect) {
+      return <Redirect to='/meeting/1234'/>;
+    }
   }
   
   const classes = useStyles();
   return (
     <div className="MeetingForm">
     <HeaderBar />
+    {redirectHandler()}
     <form onSubmit={onSubmit}>
         <div className={classes.root}>
           <Typography variant="h3" gutterBottom >
