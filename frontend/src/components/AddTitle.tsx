@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginLeft: theme.spacing(1),
   },
   textField: {
-    marginLeft: theme.spacing(1),
+    width: '90%'
     
   }
 }));
@@ -29,7 +29,6 @@ function AddTitle(props: InferProps<typeof AddTitle.propTypes>) {
         onChange={props.titleHandler}
         margin="normal"
         variant="filled"
-        required
       />
     </div>
   );
