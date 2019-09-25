@@ -10,7 +10,7 @@ function App() {
       <div className="App">
         <Route exact path="/" component={HomePage} />
         <Route exact path="/create" component={MeetingForm} />
-        <Route path="/meeting/:meetingId" component={MeetingPage} />
+        <Route path="/meeting/:meeting_id" component={MeetingPage} />
       </div>
     </Router>
   );

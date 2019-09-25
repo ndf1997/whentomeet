@@ -13,7 +13,7 @@ import { Meeting } from '../../types/Meeting';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 
-type TParams =  { meetingId: string };
+type TParams =  { meeting_id: string };
 
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const [meeting, setMeeting] = useState(new Meeting());
@@ -23,14 +23,15 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const server = axios.create({
     baseURL: serverURL,
   });
-
+  
   let memberData: Member = new Member();
+  let updatingHours: boolean = false;
 
-  const meetingId: string = match.params.meetingId;
+  const meeting_id: string = match.params.meeting_id;
 
   function componentDidMount() {
-    if (typeof meetingId !== 'undefined') {
-      server.get('/meeting?meeting_id=' + meetingId)
+    if (typeof meeting_id !== 'undefined') {
+      server.get('/meeting?meeting_id=' + meeting_id)
         .then(response => {
           const m = response.data.Item;
           setMeeting(new Meeting(
@@ -39,11 +40,11 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           setLoadingMeeting(false);
         });
       
-      const memberId: string | null = localStorage.getItem(`meetingId:${meetingId}`)
-      if (memberId !== null) {
-        server.get('/member?member_id=' + memberId)
-          .then(response => {
-            const m = response.data.Item;
+      const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`);
+      if (member_id !== null) {
+        server.get('/member?member_id=' + member_id)
+        .then(response => {
+            const m = response.data;
             memberData = new Member(
               m.member_id, m.member_name
             );
@@ -58,21 +59,27 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   useEffect(() => componentDidMount(), [])
 
   function createNewUser(name: string) {
-    if (typeof meetingId !== 'undefined') {
+    if (typeof meeting_id !== 'undefined') {
       const newMember = {
-        meeting_id: meetingId,
+        meeting_id: meeting_id,
         member_name: name,
       };
 
       server.post('/member', JSON.stringify(newMember))
         .then(response => {
-          const memberId: string = response.data.member_id;
+          const member_id: string = response.data.member_id;
 
-          localStorage.setItem(`meetingId:${meetingId}`, memberId);
-          memberData = new Member(memberId, name);
+          localStorage.setItem(`meetingId:${meeting_id}`, member_id);
+          memberData = new Member(member_id, name);
           setMember(memberData);
         });
     }
+  }
+
+  function wait() {
+    return new Promise(resolve => {
+      setTimeout(resolve, 2000);
+    });
   }
 
   function updateTimes(day: string, index: number) {
@@ -83,6 +90,18 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       if (d.name === day) {
         newHours[i].hours[index] = !newHours[i].hours[index];
       }
+    }
+
+    if (!updatingHours) {
+      updatingHours = true;
+      wait().then(() => {
+        updatingHours = false;
+
+        const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`)
+        if (member_id !== null) {
+          server.put(`/member`, JSON.stringify(memberData));
+        }
+      });
     }
   }
 
@@ -104,7 +123,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   return (
     <div className="MeetingPage">
       <HeaderBar />
-      {member.memberId === '' &&
+      {member.member_id === '' &&
         <EnterName createNewUser={(name: string) => createNewUser(name)} />
       }
       <MeetingDetails meeting={meeting} />
