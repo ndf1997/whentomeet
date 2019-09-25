@@ -12,8 +12,8 @@ import GroupTimeTableCell from './GroupTimeTableCell';
 import ConfirmTime from './ConfirmTime';
 
 import { days, times } from '../types/constants';
-import { Meeting, MeetingPropType } from '../types/Meeting';
-import { testMembers } from '../testdata/testMembers';
+import { MeetingPropType } from '../types/Meeting';
+import { MemberPropType } from '../types/Member';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -62,17 +62,25 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
           </TableRow>
         </TableHead>
         <TableBody className={classes.body}>
-          {times.map((time: string) => (
+          {times.map((time: string, index: number) => (
             <TableRow>
               <TableCell className={classes.timeColumn}>
                 <Typography className={classes.timeText}>{time}</Typography>
               </TableCell>
-              {!isGroupTable && days.map((day: string) => <TimeTableCell />)}
+              {!isGroupTable && days.map((day: string) => (
+                <TimeTableCell
+                  member={props.member}
+                  day={day}
+                  index={index}
+                  updateTimes={props.updateTimes}
+                />))
+              }
               {isGroupTable && days.map((day: string) => (
                 <GroupTimeTableCell
                   day={day}
-                  members={testMembers}
+                  members={[]}
                   time={time}
+                  index={index}
                   handleOpen={handleOpen}
                 />))
               }
@@ -87,6 +95,8 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
 TimeTable.propTypes = {
   isGroupTable: PropTypes.bool,
   meeting: MeetingPropType.isRequired,
+  member: MemberPropType.isRequired,
+  updateTimes: PropTypes.func.isRequired,
 };
 
 export default TimeTable;
