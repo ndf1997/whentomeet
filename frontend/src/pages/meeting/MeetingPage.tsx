@@ -45,8 +45,12 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         server.get('/member?member_id=' + member_id)
         .then(response => {
             const m = response.data;
+            const days: Day[] = [];
+            for (let i = 0; i < m.days.length; i++) {
+              days.push(new Day(m.days[i].name, m.days[i].hours));
+            }
             memberData = new Member(
-              m.member_id, m.member_name
+              m.member_id, m.name, days
             );
             setMember(memberData);
             setLoadingMember(false);

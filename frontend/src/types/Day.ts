@@ -16,6 +16,6 @@ export class Day {
 }
 
 export const DayPropType = PropTypes.shape({
-  name: PropTypes.string,
-  hours: PropTypes.arrayOf(PropTypes.string),
+  name: PropTypes.string.isRequired,
+  hours: PropTypes.arrayOf(PropTypes.bool.isRequired).isRequired,
 });

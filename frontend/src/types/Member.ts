@@ -19,7 +19,7 @@ export class Member {
 }
 
 export const MemberPropType = PropTypes.shape({
-  member_id: PropTypes.string,
-  name: PropTypes.string,
-  hours: PropTypes.arrayOf(DayPropType),
+  member_id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  days: PropTypes.arrayOf(DayPropType.isRequired).isRequired,
 });
