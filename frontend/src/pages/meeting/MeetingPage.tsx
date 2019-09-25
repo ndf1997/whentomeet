@@ -24,7 +24,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     baseURL: serverURL,
   });
   
-  let memberData: Member = new Member();
+  let memberData: Member = member;
   let updatingHours: boolean = false;
 
   const meeting_id: string = match.params.meeting_id;
