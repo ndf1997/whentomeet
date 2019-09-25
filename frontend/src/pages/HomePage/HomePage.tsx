@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import {Redirect} from 'react-router-dom';
 
 var sectionStyle = {
     backgroundImage: `url(${Background})`,
@@ -30,8 +31,17 @@ var sectionStyle = {
 
 function HomePage() {
   const classes = useStyles({});
-
+  const [redirect, setRedirect] = React.useState(false);
+  function changeRedirect() {
+    setRedirect(true);
+  }
+  function redirectHandler() {
+    if (redirect) {
+      return <Redirect to='/create'/>;
+    }
+  }
   return (
+    
     <div style={{ overflow: 'hidden'}} >
     <React.Fragment>
         <CssBaseline />
@@ -44,9 +54,11 @@ function HomePage() {
             </Typography>
         </Container>
     </React.Fragment>
+    {redirectHandler()}
     <body style={ sectionStyle }>
     <Container maxWidth="sm">
-    <Button variant="contained" color="primary" className={classes.button} style={{margin: '20px', height: '60px', right: '200px'}}>
+    <Button variant="contained" onClick={changeRedirect} 
+    color="primary" className={classes.button} style={{margin: '20px', height: '60px', right: '200px'}}>
         Start Planning
         </Button>
     </Container>
