@@ -63,7 +63,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`);
       if (member_id !== null) {
         // Get the current member
-        server.get('/member?member_id=' + member_id)
+        server.get('/member?meeting_id=' + meeting_id + '&member_id=' + member_id)
         .then(response => {
             const m = response.data;
             const days: Day[] = [];
@@ -134,6 +134,19 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     }
   }
 
+  function selectTime(time: string) {
+    const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
+      meeting.description, meeting.location, meeting.members);
+
+    newMeeting.selectedTime = time;
+    console.log(newMeeting);
+
+    server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
+      .then(() => {
+        setMeeting(newMeeting);
+      })
+  }
+
   if (loadingMeeting || loadingMember) {
     return (
       <div className="MeetingPage">
@@ -149,6 +162,18 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     );
   }
 
+  if (meeting.selectedTime !== '') {
+    return (
+      <div className="MeetingPage">
+        <HeaderBar />
+        {member.member_id === '' &&
+        <EnterName createNewUser={(name: string) => createNewUser(name)} />
+        }
+        <MeetingDetails meeting={meeting} />
+      </div>
+    )
+  }
+
   return (
     <div className="MeetingPage">
       <HeaderBar />
@@ -162,6 +187,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             meeting={meeting}
             member={member}
             updateTimes={updateTimes}
+            selectTime={selectTime}
           />
         </Grid>
         <Grid item xs={6}>
@@ -170,6 +196,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             member={member}
             isGroupTable
             updateTimes={updateTimes}
+            selectTime={selectTime}
           />
         </Grid>
       </Grid>

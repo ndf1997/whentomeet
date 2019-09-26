@@ -7,6 +7,7 @@ export class Meeting {
   description: string;
   location: string;
   members: Member[];
+  selectedTime: string = '';
 
   constructor(meeting_id: string = '', title: string = '', description: string = '',
     location: string = '', members: Member[] = []) {

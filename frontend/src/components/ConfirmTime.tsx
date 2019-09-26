@@ -4,13 +4,13 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mate
 
 function ConfirmTime(props: InferProps<typeof ConfirmTime.propTypes>) {
   return (
-    <Dialog open={props.open} onClose={() => props.handleSelection('none')}>
+    <Dialog open={props.open} onClose={() => props.handleSelection('')}>
       <DialogTitle>Confirm Time Selected</DialogTitle>
       <DialogContent>
         Schedule this meeting for {props.time}?
       </DialogContent>
       <DialogActions>
-        <Button color="primary" onClick={() => props.handleSelection('none')}>
+        <Button color="primary" onClick={() => props.handleSelection('')}>
           Cancel
         </Button>
         <Button color="primary" onClick={() => props.handleSelection(props.time)}>
