@@ -23,6 +23,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   const [location, setLocation] = React.useState(meeting.location);
   const [description, setDescription] = React.useState(meeting.description);
   const [open, setOpen] = React.useState(false);
+  
   function titleHandler(titleEdit: string) {
     setTitle(titleEdit);
   }
@@ -42,15 +43,12 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   return (
     <div className={classes.root}>
       <EditMeeting 
-    meeting_id={meeting.meeting_id}
-    titleHandler={titleHandler} 
-    descriptionHandler={descriptionHandler}
-    locationHandler={locationHandler}
-    open={open}
-    editHandler={editHandler}
-    existingTitle={title}
-    existingDescription={description}
-    existingLocation={location}/>
+        meeting={meeting}
+        titleHandler={titleHandler} 
+        descriptionHandler={descriptionHandler}
+        locationHandler={locationHandler}
+        open={open}
+        editHandler={editHandler}/>
       <Typography variant="h3" gutterBottom >
         {title}
       </Typography>
