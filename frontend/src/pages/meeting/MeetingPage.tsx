@@ -78,7 +78,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
               }
 
               setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, memberList, meet.selectedTime
+                meet.meeting_id, meet.title, meet.description, meet.location, members, meet.selectedTime
               ));
               setLoadingMeeting(false);
             })
@@ -112,13 +112,15 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function createNewUser(name: string) {
     if (typeof meeting_id !== 'undefined') {
-      const newMember = {
+      const newMember: Member = new Member();
+      const newMemberJSON = {
         meeting_id: meeting_id,
         member_name: name,
+        days: newMember.days,
       };
 
       // Create new User
-      server.post('/member', JSON.stringify(newMember))
+      server.post('/member', JSON.stringify(newMemberJSON))
         .then(response => {
           const member_id: string = response.data.member_id;
 
