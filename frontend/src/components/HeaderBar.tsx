@@ -23,13 +23,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
   const classes = useStyles();
-  let link;
-  if (typeof props.meetingId !== 'undefined') {
-    link = <Link to="/create">
-      <Typography variant="h6" className={classes.title}>
-      Edit Meeting</Typography>
-    </Link>
-  }
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -38,7 +31,6 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
           <Typography variant="h6" className={classes.title}>
             WhenToMeet
           </Typography>
-          {link}
         </ToolBar>
       </AppBar>
     </div>
