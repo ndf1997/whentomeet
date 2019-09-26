@@ -40,15 +40,15 @@ const theme = createMuiTheme({
 
 export default function PollingForm() {
     const classes = useStyles();
-    const intialArray: string[] = [];
+    const intialArray: string[] = [' ' , ' '];
     const [Answers, setAnswers] = useState(intialArray);
     const [open, setOpen] = React.useState(false);
-
+  
     function addAnswers() { 
       let ans = '';
       setAnswers([...Answers, ans]);
     };
-
+     
       return (
         <div>
             <Paper className={classes.root}>
@@ -69,8 +69,6 @@ export default function PollingForm() {
                     Ask your choices here
                 </Typography >
                 <ul style={{ marginTop: 'unset' }} >
-                  <Answer />
-                  <Answer /> 
                   {Answers.map((ans: string) => <Answer />)}
                 </ul>
                 </div>

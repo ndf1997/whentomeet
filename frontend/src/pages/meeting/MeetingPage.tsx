@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react-router-dom';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import HeaderBar from '../../components/HeaderBar';
 import MeetingDetails from '../../components/MeetingDetails';
@@ -15,7 +18,28 @@ import { Day } from '../../types/Day';
 
 type TParams =  { meeting_id: string };
 
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    marginTop: theme.spacing(12),
+    textAlign: 'center',
+    position: 'absolute',
+    left: '50%',
+    top: '25%',
+    transform: 'translate(-50%, -25%)'
+  },
+  paper: {
+    textAlign: 'center',
+    square: 'true',
+    alignItems: 'flex',
+    padding: theme.spacing(5),
+  },
+  reschedule: {
+    marginTop: theme.spacing(4),
+  }
+}));
+
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
+  const classes = useStyles();
   const [meeting, setMeeting] = useState(new Meeting());
   const [member, setMember] = useState(new Member());
   const [loadingMeeting, setLoadingMeeting] = useState(true);
@@ -54,7 +78,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
               }
 
               setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, memberList
+                meet.meeting_id, meet.title, meet.description, meet.location, memberList, meet.selectedTime
               ));
               setLoadingMeeting(false);
             })
@@ -63,7 +87,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`);
       if (member_id !== null) {
         // Get the current member
-        server.get('/member?member_id=' + member_id)
+        server.get('/member?meeting_id=' + meeting_id + '&member_id=' + member_id)
         .then(response => {
             const m = response.data;
             const days: Day[] = [];
@@ -134,6 +158,16 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     }
   }
 
+  function selectTime(time: string) {
+    const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
+      meeting.description, meeting.location, meeting.members, time);
+
+    server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
+      .then(() => {
+        setMeeting(newMeeting);
+      })
+  }
+
   if (loadingMeeting || loadingMember) {
     return (
       <div className="MeetingPage">
@@ -149,6 +183,25 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     );
   }
 
+  if (meeting.selectedTime !== 'none') {
+    return (
+      <div className="MeetingPage">
+        <HeaderBar />
+        {member.member_id === '' &&
+        <EnterName createNewUser={(name: string) => createNewUser(name)} />
+        }
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <MeetingDetails meeting={meeting} />
+            <Button className={classes.reschedule} color="secondary" onClick={() => selectTime('none')}>
+              Reschedule
+            </Button>
+          </Paper>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="MeetingPage">
       <HeaderBar />
@@ -162,6 +215,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             meeting={meeting}
             member={member}
             updateTimes={updateTimes}
+            selectTime={selectTime}
           />
         </Grid>
         <Grid item xs={6}>
@@ -170,6 +224,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             member={member}
             isGroupTable
             updateTimes={updateTimes}
+            selectTime={selectTime}
           />
         </Grid>
       </Grid>

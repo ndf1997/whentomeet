@@ -32,6 +32,11 @@ const theme = createMuiTheme({
   
 export default function Answer () {
     const classes = useStyles();
+    const [answer, setAnswer] = React.useState('');
+
+  function textHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    setAnswer(event.target.value);
+  }
     
     return (
         <div>
@@ -40,6 +45,8 @@ export default function Answer () {
                     className={classes.margin}
                     label="Enter choice here"
                     variant="outlined"
+                    value={answer}
+                    onChange={textHandler}
                     id="mui-theme-provider-outlined-input"
                 />
              </ThemeProvider>
