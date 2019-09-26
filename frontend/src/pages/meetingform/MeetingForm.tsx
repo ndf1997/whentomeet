@@ -58,13 +58,11 @@ function MeetingForm(props: MeetingFormProps) {
     };
     server.post('/meeting', JSON.stringify(newMeeting))
       .then(response => {
-        console.log(response);
         newMeeting.url = response.data.url;
         const meeting_id: string = response.data.meeting_id;
         newMeeting.meeting_id = meeting_id;
         server.put('/meeting', JSON.stringify(newMeeting))
           .then(response => {
-            console.log(response);
             setMeetingId(meeting_id);
             setMeetingPage('/meeting/'+meeting_id);
         
