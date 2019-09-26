@@ -74,7 +74,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
               }
 
               setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, memberList
+                meet.meeting_id, meet.title, meet.description, meet.location, memberList, meet.selectedTime
               ));
               setLoadingMeeting(false);
             })
@@ -156,9 +156,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members);
-
-    newMeeting.selectedTime = time;
+      meeting.description, meeting.location, meeting.members, time);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
