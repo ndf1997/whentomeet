@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import HeaderBar from '../../components/HeaderBar';
 import MeetingDetails from '../../components/MeetingDetails';
@@ -32,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     alignItems: 'flex',
     padding: theme.spacing(5),
   },
+  reschedule: {
+    marginTop: theme.spacing(4),
+  }
 }));
 
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
@@ -179,7 +183,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     );
   }
 
-  if (meeting.selectedTime !== '') {
+  if (meeting.selectedTime !== 'none') {
     return (
       <div className="MeetingPage">
         <HeaderBar />
@@ -189,6 +193,9 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         <div className={classes.root}>
           <Paper className={classes.paper}>
             <MeetingDetails meeting={meeting} />
+            <Button className={classes.reschedule} color="secondary" onClick={() => selectTime('none')}>
+              Reschedule
+            </Button>
           </Paper>
         </div>
       </div>

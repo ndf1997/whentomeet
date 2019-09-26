@@ -10,7 +10,7 @@ export class Meeting {
   selectedTime: string;
 
   constructor(meeting_id: string = '', title: string = '', description: string = '',
-    location: string = '', members: Member[] = [], selectedTime: string = '') {
+    location: string = '', members: Member[] = [], selectedTime: string = 'none') {
       this.meeting_id = meeting_id;
       this.title = title;
       this.description = description;
