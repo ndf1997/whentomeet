@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
-  const { meeting, member, isGroupTable, updateTimes } = props;
+  const { meeting, member, isGroupTable, updateTimes, selectTime } = props;
   const [open, setOpen] = React.useState(false);
   const [time, setTime] = React.useState('');
 
@@ -43,7 +43,10 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
     setOpen(true);
   }
 
-  function handleSelection() {
+  function handleSelection(time: string) {
+    if (time !== '') {
+      selectTime(time);
+    }
     setOpen(false);
   }
 
@@ -97,6 +100,7 @@ TimeTable.propTypes = {
   meeting: MeetingPropType.isRequired,
   member: MemberPropType.isRequired,
   updateTimes: PropTypes.func.isRequired,
+  selectTime: PropTypes.func.isRequired,
 };
 
 export default TimeTable;
