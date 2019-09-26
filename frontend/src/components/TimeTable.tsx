@@ -35,6 +35,19 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
   const { meeting, member, isGroupTable, updateTimes, selectTime } = props;
   const [open, setOpen] = React.useState(false);
   const [time, setTime] = React.useState('');
+  let filteredDays: string[] = [];
+  if (isGroupTable) {
+    for(let i = 0; i < days.length; i++) {
+      for(let j = 0; j < meeting.members.length; j++) {
+        if (meeting.members[j].days[i].hours.includes(true)) {
+          filteredDays.push(days[i]);
+          break;
+        }
+      }
+    }
+  } else {
+    filteredDays = days;
+  }
 
   const classes = useStyles();
 
@@ -50,6 +63,15 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
     setOpen(false);
   }
 
+  if (filteredDays.length === 0) {
+    return (
+      <div className={classes.root}>
+        <Typography>
+          No times selected by group members.
+        </Typography>
+      </div>)
+  }
+
   return (
     <div className={classes.root}>
       <ConfirmTime
@@ -61,7 +83,7 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            {days.map((day: string) => <TableCell>{day}</TableCell>)}
+            {filteredDays.map((day: string) => <TableCell>{day}</TableCell>)}
           </TableRow>
         </TableHead>
         <TableBody className={classes.body}>
@@ -70,7 +92,7 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
               <TableCell className={classes.timeColumn}>
                 <Typography className={classes.timeText}>{time}</Typography>
               </TableCell>
-              {!isGroupTable && days.map((day: string) => (
+              {!isGroupTable && filteredDays.map((day: string) => (
                 <TimeTableCell
                   member={member}
                   day={day}
@@ -78,7 +100,7 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
                   updateTimes={updateTimes}
                 />))
               }
-              {isGroupTable && days.map((day: string) => (
+              {isGroupTable && filteredDays.map((day: string) => (
                 <GroupTimeTableCell
                   day={day}
                   members={meeting.members}
