@@ -15,19 +15,26 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
+  const { meeting } = props;
   const classes = useStyles();
+  const isSelected = meeting.selectedTime !== '';
 
   return (
     <div className={classes.root}>
       <Typography variant="h3" gutterBottom >
-        {props.meeting.title}
+        {meeting.title}
       </Typography>
-      <Typography variant="body1" className={classes.description} >
-        {props.meeting.description}
+      <Typography variant="body1" className={isSelected ? '' : classes.description} >
+        {meeting.description}
       </Typography>
       <Typography variant="body1">
-        Location: {props.meeting.location}
+        Location: {meeting.location}
       </Typography>
+      {isSelected &&
+        <Typography variant="body1">
+          Meeting Time: {meeting.selectedTime}
+        </Typography>
+      }
     </div>
   );
 }

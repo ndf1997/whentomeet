@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react-router-dom';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import HeaderBar from '../../components/HeaderBar';
 import MeetingDetails from '../../components/MeetingDetails';
@@ -15,7 +17,25 @@ import { Day } from '../../types/Day';
 
 type TParams =  { meeting_id: string };
 
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    marginTop: theme.spacing(12),
+    textAlign: 'center',
+    position: 'absolute',
+    left: '50%',
+    top: '25%',
+    transform: 'translate(-50%, -25%)'
+  },
+  paper: {
+    textAlign: 'center',
+    square: 'true',
+    alignItems: 'flex',
+    padding: theme.spacing(5),
+  },
+}));
+
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
+  const classes = useStyles();
   const [meeting, setMeeting] = useState(new Meeting());
   const [member, setMember] = useState(new Member());
   const [loadingMeeting, setLoadingMeeting] = useState(true);
@@ -139,7 +159,6 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       meeting.description, meeting.location, meeting.members);
 
     newMeeting.selectedTime = time;
-    console.log(newMeeting);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
@@ -169,7 +188,11 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         {member.member_id === '' &&
         <EnterName createNewUser={(name: string) => createNewUser(name)} />
         }
-        <MeetingDetails meeting={meeting} />
+        <div className={classes.root}>
+          <Paper className={classes.paper}>
+            <MeetingDetails meeting={meeting} />
+          </Paper>
+        </div>
       </div>
     )
   }

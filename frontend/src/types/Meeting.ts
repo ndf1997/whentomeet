@@ -25,4 +25,5 @@ export const MeetingPropType = PropTypes.shape({
   description: PropTypes.string.isRequired,
   location: PropTypes.string.isRequired,
   members: PropTypes.arrayOf(MemberPropType.isRequired).isRequired,
+  selectedTime: PropTypes.string.isRequired,
 });
