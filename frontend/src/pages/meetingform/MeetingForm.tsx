@@ -11,7 +11,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import {History} from 'history';
 import { serverURL } from '../../types/constants';
-import PropTypes, {InferProps} from 'prop-types';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -55,13 +54,22 @@ function MeetingForm(props: MeetingFormProps) {
       description: description,
       location: location,
       members: [],
+      url: "none",
     };
     server.post('/meeting', JSON.stringify(newMeeting))
       .then(response => {
-        const meeting_id: string = response.data.meeting_id;
         console.log(response);
-        console.log(response.data.meeting_id);
-        setMeetingId(meeting_id);
+        newMeeting.url = response.data.url;
+        const meeting_id: string = response.data.meeting_id;
+        newMeeting.meeting_id = meeting_id;
+        server.put('/meeting', JSON.stringify(newMeeting))
+          .then(response => {
+            console.log(response);
+            setMeetingId(meeting_id);
+            setMeetingPage('/meeting/'+meeting_id);
+        
+            setRedirect(true);
+          })
       });
   }
 
@@ -81,45 +89,30 @@ function MeetingForm(props: MeetingFormProps) {
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     createNewMeeting();
-    setMeetingPage('/meeting/'+meetingId);
-    setRedirect(true);
-    redirectHandler();
   }
   function redirectHandler() {
-    if (redirect) {
-      props.history.push('/meeting/'+meetingId);
-    }
+    if (redirect){
+      return <Redirect to={meetingPage}/>
+    } 
   }
   
   const classes = useStyles();
   return (
     <div className="MeetingForm">
     <HeaderBar />
+    {redirectHandler()}
     <form onSubmit={onSubmit}>
         <div className={classes.root}>
           <Typography variant="h3" gutterBottom >
             Create Meeting
           </Typography>
           <Paper className={classes.paper}>
-          
-              
-                <AddTitle titleHandler={titleHandler}/>
-              
-            
-              
-                <AddDescription descriptionHandler={descriptionHandler}/>
-              
-            
-              
-                <AddLocation locationHandler={locationHandler}/>
-             
-           
-              
-                <Button variant="outlined" type="submit" className={classes.button}>
-                  Create Meeting
-                </Button>
-             
-            
+            <AddTitle titleHandler={titleHandler}/>
+            <AddDescription descriptionHandler={descriptionHandler}/>
+            <AddLocation locationHandler={locationHandler}/>
+            <Button variant="outlined" type="submit" className={classes.button}>
+              Create Meeting
+            </Button> 
           </Paper>
         </div>
       </form>

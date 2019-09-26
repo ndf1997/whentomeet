@@ -29,6 +29,7 @@ function AddTitle(props: InferProps<typeof AddTitle.propTypes>) {
         onChange={props.titleHandler}
         margin="normal"
         variant="filled"
+        required
       />
     </div>
   );
