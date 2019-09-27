@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   const { meeting } = props;
   const classes = useStyles();
-  const isSelected = meeting.selectedTime !== '';
+  const isSelected = meeting.selectedTime !== 'none';
   const [title, setTitle] = React.useState(meeting.title);
   const [location, setLocation] = React.useState(meeting.location);
   const [description, setDescription] = React.useState(meeting.description);
