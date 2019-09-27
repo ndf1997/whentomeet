@@ -58,17 +58,21 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
       <Typography variant="body1">
         Location: {location}
       </Typography>
-      <Typography variant="body1">
-        Invite URL: {meeting.url}
-      </Typography>
+      {!isSelected &&
+        <Typography variant="body1">
+          Invite URL: {meeting.url}
+        </Typography>
+      }
       {isSelected &&
         <Typography variant="body1">
           Meeting Time: {meeting.selectedTime}
         </Typography>
       }
-      <Button variant="outlined" onClick={meetingEdit}>
-        Edit Meeting
-      </Button>
+      {!isSelected &&
+        <Button variant="outlined" onClick={meetingEdit}>
+          Edit Meeting
+        </Button>
+      }
     </div>
   );
 }

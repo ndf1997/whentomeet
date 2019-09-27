@@ -157,7 +157,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members, time);
+      meeting.description, meeting.location, meeting.members, time, meeting.url);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
