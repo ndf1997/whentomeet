@@ -78,7 +78,8 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
               }
 
               setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, members, meet.selectedTime
+                meet.meeting_id, meet.title, meet.description, meet.location, members,
+                meet.selectedTime, meet.url
               ));
               setLoadingMeeting(false);
             })

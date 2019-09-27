@@ -43,7 +43,7 @@ function EditMeeting(props: InferProps<typeof EditMeeting.propTypes>) {
         const editMeeting = new Meeting(props.meeting.meeting_id, 
             title, description, location, props.meeting.members, props.meeting.selectedTime, 
             props.meeting.url);
-        server.put('/meeting', JSON.stringify(editMeeting))
+        server.put('/meeting?meeting_id=' + editMeeting.meeting_id, JSON.stringify(editMeeting))
             .then(response => {
                 props.titleHandler(title);
                 props.locationHandler(location);
