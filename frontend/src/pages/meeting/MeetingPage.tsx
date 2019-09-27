@@ -74,6 +74,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
                   days.push(new Day(mem.days[j].name, mem.days[j].hours));
                 }
 
+                addMember.days = days;
                 members.push(addMember);
               }
 
