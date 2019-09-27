@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes, { InferProps } from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
-import AddTitle from './AddTitle';
-import AddDescription from './AddDescription';
-import AddLocation from './AddLocation';
+import { MeetingPropType } from '../types/Meeting';
 import { serverURL } from '../types/constants';
 import { Meeting } from '../types/Meeting';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -21,10 +18,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }));
 function EditMeeting(props: InferProps<typeof EditMeeting.propTypes>) {
     const classes = useStyles();
-    const [title, setTitle] = React.useState(props.existingTitle);
+    const [title, setTitle] = React.useState(props.meeting.title);
     const [redirect, setRedirect] = React.useState(false);
-    const [location, setLocation] = React.useState(props.existingLocation);
-    const [description, setDescription] = React.useState(props.existingDescription);
+    const [location, setLocation] = React.useState(props.meeting.location);
+    const [description, setDescription] = React.useState(props.meeting.description);
     const [open, setOpen] = useState(false);
     const server = axios.create({
         baseURL: serverURL,
@@ -43,13 +40,10 @@ function EditMeeting(props: InferProps<typeof EditMeeting.propTypes>) {
     }
 
     function submitEdit() {
-        const editMeeting = {
-            meeting_id: props.meeting_id,
-            title: title,
-            description: description,
-            location: location,
-        };
-        server.put('/meeting', JSON.stringify(editMeeting))
+        const editMeeting = new Meeting(props.meeting.meeting_id, 
+            title, description, location, props.meeting.members, props.meeting.selectedTime, 
+            props.meeting.url);
+        server.put('/meeting?meeting_id=' + editMeeting.meeting_id, JSON.stringify(editMeeting))
             .then(response => {
                 props.titleHandler(title);
                 props.locationHandler(location);
@@ -108,15 +102,12 @@ function EditMeeting(props: InferProps<typeof EditMeeting.propTypes>) {
 }
 
 EditMeeting.propTypes = {
-    meeting_id: PropTypes.string.isRequired,
+    meeting: MeetingPropType.isRequired,
     titleHandler: PropTypes.func.isRequired,
     descriptionHandler: PropTypes.func.isRequired,
     locationHandler: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
     editHandler: PropTypes.func.isRequired,
-    existingTitle: PropTypes.string.isRequired,
-    existingDescription: PropTypes.string.isRequired,
-    existingLocation: PropTypes.string.isRequired,
 }
 
 export default EditMeeting;

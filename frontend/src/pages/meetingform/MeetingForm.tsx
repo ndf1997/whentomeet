@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import {History} from 'history';
 import { serverURL } from '../../types/constants';
+import { Meeting } from '../../types/Meeting';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -48,26 +49,38 @@ function MeetingForm(props: MeetingFormProps) {
   });
 
   function createNewMeeting() {
-    const newMeeting = {
-      meeting_id: '1',
-      title: title,
-      description: description,
-      location: location,
-      members: [],
-      url: "none",
-    };
+    const newMeeting = new Meeting(
+      "1",
+      title,
+      description,
+      location,
+      [],
+      "none",
+      "none"
+    );
     server.post('/meeting', JSON.stringify(newMeeting))
       .then(response => {
-        newMeeting.url = response.data.url;
+        console.log(response);
+        const editMeeting = new Meeting(
+          response.data.meeting_id,
+          title,
+          description,
+          location,
+          [],
+          "none",
+          response.data.url
+        )
         const meeting_id: string = response.data.meeting_id;
-        newMeeting.meeting_id = meeting_id;
-        server.put('/meeting', JSON.stringify(newMeeting))
+        server.put('/meeting', JSON.stringify(editMeeting))
           .then(response => {
-            setMeetingId(meeting_id);
-            setMeetingPage('/meeting/'+meeting_id);
+            server.get('/meeting?meeting_id='+meeting_id)
+              .then(response => {
+                setMeetingId(meeting_id);
+                setMeetingPage('/meeting/'+meeting_id);
         
-            setRedirect(true);
-          })
+                setRedirect(true);
+              });
+          });
       });
   }
 

@@ -67,18 +67,20 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
               for (let i = 0; i < memberList.length; i++ ) {
                 const mem = memberList[i];
-                const addMember = new Member(mem.member_id, mem.name);
+                const addMember = new Member(meeting_id, mem.member_id, mem.name);
                 const days: Day[] = [];
 
                 for (let j = 0; j < mem.days.length; j++) {
                   days.push(new Day(mem.days[j].name, mem.days[j].hours));
                 }
 
+                addMember.days = days;
                 members.push(addMember);
               }
 
               setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, memberList, meet.selectedTime
+                meet.meeting_id, meet.title, meet.description, meet.location, members,
+                meet.selectedTime, meet.url
               ));
               setLoadingMeeting(false);
             })
@@ -96,9 +98,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
               days.push(new Day(m.days[i].name, m.days[i].hours));
             }
 
-            memberData = new Member(
-              m.member_id, m.name, days
-            );
+            memberData = new Member(meeting_id, m.member_id, m.name, days);
             
             setMember(memberData);
             setLoadingMember(false);
@@ -112,18 +112,15 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function createNewUser(name: string) {
     if (typeof meeting_id !== 'undefined') {
-      const newMember = {
-        meeting_id: meeting_id,
-        member_name: name,
-      };
+      const newMember: Member = new Member(meeting_id, '1', name);
 
       // Create new User
-      server.post('/member', JSON.stringify(newMember))
+      server.post('/member?meeting_id=' + meeting_id, JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;
 
           localStorage.setItem(`meetingId:${meeting_id}`, member_id);
-          memberData = new Member(member_id, name);
+          memberData = new Member(meeting_id, member_id, name);
           setMember(memberData);
         });
     }
@@ -152,7 +149,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
         const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`)
         if (member_id !== null) {
-          server.put(`/member`, JSON.stringify(memberData));
+          server.put(`/member?meeting_id=` + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData));
         }
       });
     }
@@ -160,7 +157,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members, time);
+      meeting.description, meeting.location, meeting.members, time, meeting.url);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {

@@ -18,11 +18,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   const { meeting } = props;
   const classes = useStyles();
-  const isSelected = meeting.selectedTime !== '';
+  const isSelected = meeting.selectedTime !== 'none';
   const [title, setTitle] = React.useState(meeting.title);
   const [location, setLocation] = React.useState(meeting.location);
   const [description, setDescription] = React.useState(meeting.description);
   const [open, setOpen] = React.useState(false);
+  
   function titleHandler(titleEdit: string) {
     setTitle(titleEdit);
   }
@@ -42,15 +43,12 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   return (
     <div className={classes.root}>
       <EditMeeting 
-    meeting_id={meeting.meeting_id}
-    titleHandler={titleHandler} 
-    descriptionHandler={descriptionHandler}
-    locationHandler={locationHandler}
-    open={open}
-    editHandler={editHandler}
-    existingTitle={title}
-    existingDescription={description}
-    existingLocation={location}/>
+        meeting={meeting}
+        titleHandler={titleHandler} 
+        descriptionHandler={descriptionHandler}
+        locationHandler={locationHandler}
+        open={open}
+        editHandler={editHandler}/>
       <Typography variant="h3" gutterBottom >
         {title}
       </Typography>
@@ -60,17 +58,21 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
       <Typography variant="body1">
         Location: {location}
       </Typography>
-      <Typography variant="body1">
-        Invite URL: {meeting.url}
-      </Typography>
+      {!isSelected &&
+        <Typography variant="body1">
+          Invite URL: {meeting.url}
+        </Typography>
+      }
       {isSelected &&
         <Typography variant="body1">
           Meeting Time: {meeting.selectedTime}
         </Typography>
       }
-      <Button variant="outlined" onClick={meetingEdit}>
-        Edit Meeting
-      </Button>
+      {!isSelected &&
+        <Button variant="outlined" onClick={meetingEdit}>
+          Edit Meeting
+        </Button>
+      }
     </div>
   );
 }

@@ -4,12 +4,14 @@ import { Day, DayPropType } from './Day';
 import { days as d } from './constants';
 
 export class Member {
+  meeting_id: string;
   member_id: string;
   name: string;
   days: Day[];
   pollingChoice?: number;
 
-  constructor(member_id: string = '', name: string = '', days: Day[] = []) {
+  constructor(meeting_id: string = '', member_id: string = '', name: string = '', days: Day[] = []) {
+    this.meeting_id = meeting_id;
     this.member_id = member_id;
     this.name = name;
     this.days = days;
@@ -20,6 +22,7 @@ export class Member {
 }
 
 export const MemberPropType = PropTypes.shape({
+  meeting_id: PropTypes.string.isRequired,
   member_id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   days: PropTypes.arrayOf(DayPropType.isRequired).isRequired,
