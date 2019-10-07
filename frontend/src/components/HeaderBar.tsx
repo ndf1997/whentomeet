@@ -1,12 +1,12 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Link, RouteComponentProps } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 import ToolBar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import PropTypes, {InferProps} from 'prop-types';
-
+import UploadFiles from './UploadFiles';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -22,15 +22,29 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
+  const { isMeetingPage } = props;
   const classes = useStyles();
+  const [openFileDialog, setOpenFileDialog] = React.useState(false);
+
+  function closeFileDialog() {
+    setOpenFileDialog(false);
+  }
+
   return (
     <div className={classes.root}>
+      <UploadFiles open={openFileDialog} closeFileDialog={closeFileDialog}/>
       <AppBar position="static">
         <ToolBar>
           <MeetingRoomIcon className={classes.meetingIcon} />
           <Typography variant="h6" className={classes.title}>
             WhenToMeet
           </Typography>
+          {isMeetingPage &&
+            <Button
+              color="inherit"
+              onClick={() => setOpenFileDialog(true)}
+            >Files</Button>
+          }
         </ToolBar>
       </AppBar>
     </div>
@@ -38,7 +52,7 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
 }
 
 HeaderBar.propTypes = {
-  meetingId: PropTypes.string,
+  isMeetingPage: PropTypes.bool,
 }
 
 export default HeaderBar;

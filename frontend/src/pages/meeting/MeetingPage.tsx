@@ -201,7 +201,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   return (
     <div className="MeetingPage">
-      <HeaderBar />
+      <HeaderBar isMeetingPage />
       {member.member_id === '' &&
         <EnterName createNewUser={(name: string) => createNewUser(name)} />
       }
