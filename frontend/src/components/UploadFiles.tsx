@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Dialog, DialogTitle, DialogContent } from '@material-ui/core';
+// @ts-ignore
+import S3FileUpload from 'react-s3';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
+
+import { bucketName, region, accessKeyId, secretAccessKey } from '../types/constants';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   addIcon: {
@@ -13,31 +16,49 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
   const classes = useStyles();
+  const config = {
+    bucketName, 
+    dirName: props.meetingId,
+    region, 
+    accessKeyId, 
+    secretAccessKey,
+  }
+
+  function uploadFile (files: FileList | null) {
+    if (files !== null) {
+      const file: File = files[0];
+      S3FileUpload.uploadFile(file, config)
+        // @ts-ignore
+        .then(data => console.log(data))
+        // @ts-ignore
+        .catch(err => console.log(err));
+    }
+  }
 
   return (
-    <Dialog
-      onClose={() => props.closeFileDialog()}
-      open={props.open}
-      maxWidth="lg"
-      fullWidth
-    >
-      <DialogTitle>FileManager</DialogTitle>
-      <DialogContent>
+    <div>
+      <input
+        type="file"
+        id="file-button"
+        style={{ display: 'none' }}
+        onChange={event => uploadFile(event.target.files)}
+      />
+      <label htmlFor="file-button">
         <Button
           variant="contained"
           color="primary"
+          component="span"
         >
           <AddIcon className={classes.addIcon}/>
           Upload File
         </Button>
-      </DialogContent>
-    </Dialog>
+      </label>
+    </div>
   )
 }
 
 UploadFiles.propTypes = {
-  closeFileDialog: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-};
+  meetingId: PropTypes.string,
+}
 
 export default UploadFiles;

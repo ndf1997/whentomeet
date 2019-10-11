@@ -6,7 +6,7 @@ import ToolBar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import PropTypes, {InferProps} from 'prop-types';
-import UploadFiles from './UploadFiles';
+import FileManager from './FileManager';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
-  const { isMeetingPage } = props;
+  const { isMeetingPage, meetingId } = props;
   const classes = useStyles();
   const [openFileDialog, setOpenFileDialog] = React.useState(false);
 
@@ -32,7 +32,7 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
 
   return (
     <div className={classes.root}>
-      <UploadFiles open={openFileDialog} closeFileDialog={closeFileDialog}/>
+      {isMeetingPage && <FileManager open={openFileDialog} closeFileDialog={closeFileDialog} meetingId={meetingId} />}
       <AppBar position="static">
         <ToolBar>
           <MeetingRoomIcon className={classes.meetingIcon} />
@@ -53,6 +53,7 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
 
 HeaderBar.propTypes = {
   isMeetingPage: PropTypes.bool,
+  meetingId: PropTypes.string,
 }
 
 export default HeaderBar;
