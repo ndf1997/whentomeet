@@ -1,4 +1,6 @@
 import React from 'react';
+// @ts-ignore
+import S3 from 'aws-s3';
 import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 // @ts-ignore
@@ -23,17 +25,21 @@ function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
     accessKeyId, 
     secretAccessKey,
   }
+  console.log(config);
 
   function uploadFile (files: FileList | null) {
     if (files !== null) {
       const file: File = files[0];
-      S3FileUpload.uploadFile(file, config)
+      const S3Client = new S3(config);
+      console.log(file);
+      S3Client.uploadFile(file, file.name.split('.')[0])
         // @ts-ignore
         .then(data => console.log(data))
         // @ts-ignore
         .catch(err => console.log(err));
     }
   }
+
 
   return (
     <div>
