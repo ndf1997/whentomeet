@@ -3,8 +3,6 @@ import React from 'react';
 import S3 from 'aws-s3';
 import PropTypes, { InferProps } from 'prop-types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-// @ts-ignore
-import S3FileUpload from 'react-s3';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 
