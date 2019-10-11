@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes, { InferProps, string } from 'prop-types';
-import { Dialog, DialogTitle, DialogContent } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import UploadFiles from './UploadFiles';
 import FileList from './FileList';
 
@@ -17,10 +18,15 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
       fullWidth
     >
       <DialogTitle>File Manager</DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <FileList files={testFiles} />
-        <UploadFiles meetingId={meetingId} />
       </DialogContent>
+      <DialogActions>
+        <Button onClick={() => closeFileDialog()}>
+          Cancel
+        </Button>
+        <UploadFiles meetingId={meetingId} />
+      </DialogActions>
     </Dialog>
   )
 }
