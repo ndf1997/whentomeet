@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import PropTypes, { InferProps, string } from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import UploadFiles from './UploadFiles';
 import FileList from './FileList';
 
-import { testFiles } from '../types/File';
+import { serverURL } from '../types/constants';
+import { File, testFiles } from '../types/File';
 
 function FileManager(props: InferProps<typeof FileManager.propTypes>) {
   const { open, closeFileDialog, meetingId } = props;
+  const emptyFileList: File[] = [];
+  const [files, setFiles] = useState(emptyFileList);
+  const server = axios.create({
+    baseURL: serverURL,
+  });
+
+  function getFiles() {
+    server.get('/files?meeting_id=' + meetingId)
+      .then(response => {
+        console.log(response);
+      })
+  }
+  useEffect(() => getFiles(), [])
 
   return (
     <Dialog

@@ -23,13 +23,11 @@ function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
     accessKeyId, 
     secretAccessKey,
   }
-  console.log(config);
 
   function uploadFile (files: FileList | null) {
     if (files !== null) {
       const file: File = files[0];
       const S3Client = new S3(config);
-      console.log(file);
       S3Client.uploadFile(file, file.name.split('.')[0])
         // @ts-ignore
         .then(data => console.log(data))
