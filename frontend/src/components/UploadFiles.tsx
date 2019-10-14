@@ -30,7 +30,9 @@ function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
       const S3Client = new S3(config);
       S3Client.uploadFile(file, file.name.split('.')[0])
         // @ts-ignore
-        .then(data => console.log(data))
+        .then(data => {
+          props.getFiles();
+        })
         // @ts-ignore
         .catch(err => console.log(err));
     }
@@ -61,6 +63,7 @@ function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
 
 UploadFiles.propTypes = {
   meetingId: PropTypes.string,
+  getFiles: PropTypes.func.isRequired,
 }
 
 export default UploadFiles;
