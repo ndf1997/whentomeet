@@ -17,6 +17,12 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
     baseURL: serverURL,
   });
 
+  function wait() {
+    return new Promise(resolve => {
+      setTimeout(resolve, 3000);
+    });
+  }
+
   function getFiles() {
     server.get('/files?meeting_id=' + meetingId)
       .then(response => {
@@ -28,7 +34,14 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
         setFiles(newFileList);
       })
   }
-  useEffect(() => getFiles(), [])
+  useEffect(() => getFiles(), []);
+
+  function deleteFile(filename: string) {
+    server.delete(`/files?meeting_id=` + meetingId + '&filename=' + filename)
+      .then(() => {
+        wait().then(() => getFiles());
+      });
+  }
 
   return (
     <Dialog
@@ -39,7 +52,7 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
     >
       <DialogTitle>File Manager</DialogTitle>
       <DialogContent dividers>
-        <FileList files={files} getFiles={getFiles} />
+        <FileList files={files} deleteFile={deleteFile} />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => closeFileDialog()}>
