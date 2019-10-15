@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import PropTypes, { InferProps } from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
