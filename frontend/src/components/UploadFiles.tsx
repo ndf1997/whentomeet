@@ -29,12 +29,9 @@ function UploadFiles(props: InferProps<typeof UploadFiles.propTypes>) {
       const file: File = files[0];
       const S3Client = new S3(config);
       S3Client.uploadFile(file, file.name.split('.')[0])
+        .then(() => props.getFiles())
         // @ts-ignore
-        .then(data => {
-          props.getFiles();
-        })
-        // @ts-ignore
-        .catch(err => console.log(err));
+        .catch(() => props.getFiles());
     }
   }
 
