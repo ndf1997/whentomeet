@@ -37,6 +37,9 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
         left: 0,
         width: percentage,
       },
+      borderRight: 'solid',
+      borderRightColor: 'rgba(0, 0, 0, 0.07)',
+      borderRightWidth: '1px',
     },
   }))();
 

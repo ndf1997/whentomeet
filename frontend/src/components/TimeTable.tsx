@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   timeColumn: {
     padding: 1,
+    borderRight: 'solid',
+    borderRightColor: 'rgba(0, 0, 0, 0.07)',
+    borderRightWidth: '1px',
   },
   timeText: {
     fontSize: 11,

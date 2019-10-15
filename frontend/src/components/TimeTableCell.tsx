@@ -8,7 +8,11 @@ import { Day } from '../types/Day';
 import { MemberPropType, Member } from '../types/Member';
 
 const useStyles = makeStyles(() => createStyles({
-  root: {},
+  root: {
+    borderRight: 'solid',
+    borderRightColor: 'rgba(0, 0, 0, 0.07)',
+    borderRightWidth: '1px',
+  },
   selected: {
     backgroundColor: '#8bc34a',
   },
