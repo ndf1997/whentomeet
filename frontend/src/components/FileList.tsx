@@ -21,11 +21,11 @@ function FileList(props: InferProps<typeof FileList.propTypes>) {
               <FolderIcon />
             </ListItemIcon>
             <Link href={file.url} color="inherit" target="_blank" rel="noopener">
-              {file.name}
+              {file.filename}
             </Link>
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="delete">
-                <DeleteIcon />
+                <DeleteIcon onClick={() => props.deleteFile(file.filename)} />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
@@ -37,6 +37,7 @@ function FileList(props: InferProps<typeof FileList.propTypes>) {
 
 FileList.propTypes = {
   files: PropTypes.arrayOf(FilePropType.isRequired).isRequired,
+  deleteFile: PropTypes.func.isRequired,
 }
 
 export default FileList;

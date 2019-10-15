@@ -7,7 +7,7 @@ import UploadFiles from './UploadFiles';
 import FileList from './FileList';
 
 import { serverURL } from '../types/constants';
-import { File, testFiles } from '../types/File';
+import { File } from '../types/File';
 
 function FileManager(props: InferProps<typeof FileManager.propTypes>) {
   const { open, closeFileDialog, meetingId } = props;
@@ -20,10 +20,20 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
   function getFiles() {
     server.get('/files?meeting_id=' + meetingId)
       .then(response => {
-        console.log(response);
+        const newFileList: File[] = [];
+        const f = response.data.files;
+        for(let i = 0;i < f.length;i++) {
+          newFileList.push(new File(f[i].filename, f[i].url));
+        }
+        setFiles(newFileList);
       })
   }
-  useEffect(() => getFiles(), [])
+  useEffect(() => getFiles(), []);
+
+  function deleteFile(filename: string) {
+    server.delete(`/files?meeting_id=` + meetingId + '&filename=' + filename)
+      .then(() => getFiles());
+  }
 
   return (
     <Dialog
@@ -34,13 +44,13 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
     >
       <DialogTitle>File Manager</DialogTitle>
       <DialogContent dividers>
-        <FileList files={testFiles} />
+        <FileList files={files} deleteFile={deleteFile} />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => closeFileDialog()}>
           Cancel
         </Button>
-        <UploadFiles meetingId={meetingId} />
+        <UploadFiles meetingId={meetingId} getFiles={getFiles} />
       </DialogActions>
     </Dialog>
   )
