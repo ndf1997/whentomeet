@@ -32,9 +32,7 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
 
   function deleteFile(filename: string) {
     server.delete(`/files?meeting_id=` + meetingId + '&filename=' + filename)
-      .then(response => {
-        getFiles();
-      });
+      .then(() => getFiles());
   }
 
   return (
