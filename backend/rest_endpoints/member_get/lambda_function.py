@@ -11,7 +11,7 @@ tableMember = dynamo.Table(os.environ['TABLE_MEMBER'])
 def respond(err, res=None):
     return {
         'statusCode': '400' if err else '200',
-        'body': err if err else json.dumps(res),
+        'body': json.dumps(err) if err else json.dumps(res),
         'headers': {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -21,11 +21,13 @@ def respond(err, res=None):
 
 def lambda_handler(event, context):
     
+    print("Received event: " + json.dumps(event))
+
     if event['httpMethod'] != 'GET':
-        return respond('Not a GET method');
+        return respond({"error" : "Not a GET method"});
     data = {}
-    if 'meeting_id' not in event['queryStringParameters']:
-        return respond("Missing meeting_id")
+    if event['queryStringParameters'] == None or 'meeting_id' not in event['queryStringParameters']:
+        return respond({"error" : "Missing meeting_id"})
         
         
 
@@ -40,13 +42,15 @@ def lambda_handler(event, context):
             ],
         )     
     data = res['Item']
+    print(data)
     
     if 'member_id' in event['queryStringParameters']:
-        data = "Member not in meeting"
+        print("should not be here")
+        data = {"error" : "Member not in meeting"}
         for member in res['Item']['members']:
             if event['queryStringParameters']['member_id'] == member['member_id']:
                 data = member
                 break;
         
-
+    print(data)
     return respond(None, data)
