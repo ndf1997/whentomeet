@@ -16,7 +16,7 @@ function FileList(props: InferProps<typeof FileList.propTypes>) {
     <div>
       <List>
         {props.files.map(file => (
-          <ListItem>
+          <ListItem key={file.filename}>
             <ListItemIcon>
               <FolderIcon />
             </ListItemIcon>
@@ -24,8 +24,8 @@ function FileList(props: InferProps<typeof FileList.propTypes>) {
               {file.filename}
             </Link>
             <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete">
-                <DeleteIcon onClick={() => props.deleteFile(file.filename)} />
+              <IconButton edge="end" aria-label="delete" onClick={() => props.deleteFile(file.filename)}>
+                <DeleteIcon />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
