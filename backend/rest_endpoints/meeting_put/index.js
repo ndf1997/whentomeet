@@ -10,15 +10,18 @@ exports.handler = (event, context, callback) => {
 
     const done = (err, res) => callback(null, {
         statusCode: err ? '400' : '201',
-        body: err ? err.message : JSON.stringify(res),
+        body: err ? JSON.stringify(err) : JSON.stringify({"meeting_id" : event.body.meeting_id}),
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         },
     });
+    
+    console.log(JSON.stringify(event));
 
-    if (event.httpMethod != 'PUT') {
-        done(new Error(`Unsupported method "${event.httpMethod}"`));
+    if (event.httpMethod != 'PUT' && event.httpMethod != 'PATCH') {
+        done({"error" :  "Unsupported method"});
+        console.log("method");
         return;
     }
     
@@ -27,7 +30,8 @@ exports.handler = (event, context, callback) => {
     } 
     
     if ((event.body == null) || (event.body.meeting_id == undefined)) {
-        done(new Error("Does not have meeting_id"));
+        done({"error" :  "Does not have meeting_id"});
+
         return;
     }
     
@@ -40,7 +44,8 @@ exports.handler = (event, context, callback) => {
  
     var myCallback = function(abc, res) {
         if (Object.keys(res).length === 0) {
-            done(new Error("Meeting does not exist"));
+            done({"error" : "meeting does not exist"});
+
         }
     };
     dynamo.getItem(checkItem, myCallback);
