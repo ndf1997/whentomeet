@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import PropTypes, { InferProps, string } from 'prop-types';
+import PropTypes, { InferProps } from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import UploadFiles from './UploadFiles';
@@ -59,7 +59,7 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
 FileManager.propTypes = {
   closeFileDialog: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  meetingId: string,
+  meetingId: PropTypes.string,
 };
 
 export default FileManager;
