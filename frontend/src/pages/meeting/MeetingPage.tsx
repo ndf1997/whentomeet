@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     top: '25%',
     transform: 'translate(-50%, -25%)'
   },
+  headerSpacing: {
+    marginTop: theme.spacing(10),
+  },
   paper: {
     textAlign: 'center',
     square: 'true',
@@ -174,7 +177,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           justify="center"
           alignItems="center"
         >
-          <CircularProgress/>
+          <CircularProgress className={classes.headerSpacing}/>
         </Grid>
       </div>
     );
@@ -207,7 +210,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       }
       <MeetingDetails meeting={meeting} />
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TimeTable
             meeting={meeting}
             member={member}
@@ -215,7 +218,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
             selectTime={selectTime}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TimeTable
             meeting={meeting}
             member={member}

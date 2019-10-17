@@ -9,6 +9,7 @@ import EditMeeting from './EditMeeting';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(10),
   },
   description: {
     maxWidth: 500,
@@ -41,7 +42,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
     setOpen(true);
   }
   return (
-    <div className={classes.root}>
+    <div className={isSelected ? '' : classes.root}>
       <EditMeeting 
         meeting={meeting}
         titleHandler={titleHandler} 

@@ -33,7 +33,7 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
   return (
     <div className={classes.root}>
       {isMeetingPage && <FileManager open={openFileDialog} closeFileDialog={closeFileDialog} meetingId={meetingId} />}
-      <AppBar position="static">
+      <AppBar position="fixed">
         <ToolBar>
           <MeetingRoomIcon className={classes.meetingIcon} />
           <Typography variant="h6" className={classes.title}>
