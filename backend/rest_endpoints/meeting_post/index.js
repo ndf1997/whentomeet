@@ -6,15 +6,15 @@ const dynamo = new doc.DynamoDB();
 
 exports.handler = (event,context,callback) => {
     var id = shortid.generate();
-    // TODO implement
+    console.log("Received event: " + JSON.stringify(event));
     var response = {
-        'url' : "http://whentomeet.s3-website.us-east-2.amazonaws.com/" + id,
+        'url' : "http://whentomeet.s3-website.us-east-2.amazonaws.com/meeting/" + id,
         'meeting_id' : id
         
     }
   const done = (err, res) => callback(null, {
         statusCode: err ? '400' : '201',
-        body: err ? err.message : JSON.stringify(response),
+        body: err ? JSON.stringify(err) : JSON.stringify(response),
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -24,7 +24,7 @@ exports.handler = (event,context,callback) => {
     
     
     if (event.httpMethod != 'POST') {
-        done(new Error(`Unsupported method "${event.httpMethod}"`));
+        done({"error" :  "Unsupported method"});
         return;
     }
     
@@ -36,9 +36,13 @@ exports.handler = (event,context,callback) => {
     }
     
     if (event.body.members == undefined) {
-        event.body['members'] = {}
+        event.body['members'] = []
     }
     
+    if (event.body.files == undefined) {
+        event.body['files'] =[]
+    }
+ 
     event.body['meeting_id'] = id;
     var toInsert = {
         'TableName' : '408_meeting',

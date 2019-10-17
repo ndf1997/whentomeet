@@ -1,5 +1,10 @@
 export const serverURL: string = 'https://rvpqx6w707.execute-api.us-east-2.amazonaws.com/dev/';
 
+export const bucketName: string = 'whentomeetfiles';
+export const region: string = 'us-east-2';
+export const accessKeyId: string = 'AKIATYVWOPIYF4NGCAOX';
+export const secretAccessKey: string = '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';
+
 export const days: string[] = [
   'Sunday',
   'Monday',
