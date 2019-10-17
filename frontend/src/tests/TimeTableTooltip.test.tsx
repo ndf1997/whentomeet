@@ -33,6 +33,11 @@ describe('TimeTableTooltip tests', () => {
     }
   });
 
+  it('should render tooltip', () => {
+    const tooltip = shallow(<TimeTableTooltip {...props} />);
+    expect(tooltip.find(Tooltip).length).toEqual(1);
+  });
+
   it('should render correct time and availability', () => {
     const tooltip = mount(<TimeTableTooltip {...props} />);
     const tooltipContent = shallow(<div>{tooltip.find(Tooltip).props().title}</div>);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { InferProps } from 'prop-types';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import TableCell from '@material-ui/core/TableCell';
 import TimeTableCell from '../components/TimeTableCell';
 
