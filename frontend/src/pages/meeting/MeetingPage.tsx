@@ -50,6 +50,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const server = axios.create({
     baseURL: serverURL,
   });
+  const ws = new WebSocket('wss://4q2r9vhqc6.execute-api.us-east-2.amazonaws.com/dev');
   
   let memberData: Member = member;
   let updatingHours: boolean = false;
@@ -57,6 +58,21 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const meeting_id: string = match.params.meeting_id;
 
   function componentDidMount() {
+    const connect = {
+      action: "addMeeting",
+      meeting_id: meeting_id
+    };
+    ws.onopen = message => {ws.send(JSON.stringify(connect));
+    console.log(message);}
+    ws.onmessage = evt => {
+      var str = evt.data;
+      str = str.substring(5);
+      var temp = JSON.parse(str);
+      console.log(temp);
+      console.log(meeting);
+      const newMeeting: Meeting = new Meeting(temp.meeting_id, temp.title,
+        temp.description, temp.location, temp.members, temp.time, temp.url, temp.creatorId);
+    }
     if (typeof meeting_id !== 'undefined') {
       // Get the meeting by meeting_id
       server.get('/meeting?meeting_id=' + meeting_id)
@@ -121,19 +137,25 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       server.post('/member?meeting_id=' + meeting_id, JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;
-          if (meeting.creatorId == "none") {
-            meeting.creatorId = member_id;
-            console.log(meeting);
-            server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meeting))
-            .then(response => { 
-              setMeeting(meeting);
-            })
-          }
+          console.log(response.data);
 
           localStorage.setItem(`meetingId:${meeting_id}`, member_id);
           memberData = new Member(meeting_id, member_id, name);
           console.log(memberData);
           setMember(memberData);
+          if (meeting.creatorId == "none") {
+            server.get('/meeting?meeting_id=' + meeting_id).then(response=>{
+              const meet = response.data.Item;
+              meet.creatorId = member_id;
+              server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meet))
+            .then(response => { 
+              setMeeting(meet);
+              const update = {
+                action: "onUpdate",
+                message: meet
+              };
+            })});
+          }
         });
     }
   }
@@ -146,7 +168,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function updateTimes(day: string, index: number) {
     const newHours: Day[] = memberData.days;
-
+    console.log(day);
     for (let i = 0; i < newHours.length; i++) {
       const d: Day = newHours[i];
       if (d.name === day) {
@@ -158,10 +180,16 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       updatingHours = true;
       wait().then(() => {
         updatingHours = false;
-
         const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`)
         if (member_id !== null) {
-          server.put(`/member?meeting_id=` + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData));
+          console.log("here");
+          server.put('/member?meeting_id=' + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData)).then((response )=> {
+            console.log(response);
+            const update = {
+              action: "onUpdate",
+              message: meeting
+            };
+            ws.send(JSON.stringify(update));});
         }
       });
     }
@@ -169,7 +197,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members, time, meeting.url);
+      meeting.description, meeting.location, meeting.members, time, meeting.url, meeting.creatorId);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
