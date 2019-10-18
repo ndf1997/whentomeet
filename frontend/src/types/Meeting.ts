@@ -9,9 +9,11 @@ export class Meeting {
   members: Member[];
   selectedTime: string;
   url: string;
+  creatorId: string;
 
   constructor(meeting_id: string = '', title: string = '', description: string = '',
-    location: string = '', members: Member[] = [], selectedTime: string = 'none', url: string = '') {
+    location: string = '', members: Member[] = [], selectedTime: string = 'none', url: string = '',
+    creatorId: string = '') {
       this.meeting_id = meeting_id;
       this.title = title;
       this.description = description;
@@ -19,6 +21,7 @@ export class Meeting {
       this.members = members;
       this.selectedTime = selectedTime;
       this.url = url;
+      this.creatorId = creatorId;
     }
 }
 
@@ -30,4 +33,5 @@ export const MeetingPropType = PropTypes.shape({
   members: PropTypes.arrayOf(MemberPropType.isRequired).isRequired,
   selectedTime: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
+  creatorId: PropTypes.string,
 });

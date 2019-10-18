@@ -77,11 +77,12 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
 
   return (
     <div className={classes.root}>
+      {meeting.creatorId == member.member_id && 
       <ConfirmTime
         open={open}
         time={time}
         handleSelection={handleSelection}
-      />
+      /> }
       <Table size="small">
         <TableHead>
           <TableRow>

@@ -83,7 +83,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
               setMeeting(new Meeting(
                 meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url
+                meet.selectedTime, meet.url, meet.creatorId
               ));
               setLoadingMeeting(false);
             })
@@ -121,9 +121,18 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       server.post('/member?meeting_id=' + meeting_id, JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;
+          if (meeting.creatorId == "none") {
+            meeting.creatorId = member_id;
+            console.log(meeting);
+            server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meeting))
+            .then(response => { 
+              setMeeting(meeting);
+            })
+          }
 
           localStorage.setItem(`meetingId:${meeting_id}`, member_id);
           memberData = new Member(meeting_id, member_id, name);
+          console.log(memberData);
           setMember(memberData);
         });
     }
@@ -192,7 +201,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         }
         <div className={classes.root}>
           <Paper className={classes.paper}>
-            <MeetingDetails meeting={meeting} />
+            <MeetingDetails meeting={meeting} member={member}/>
             <Button className={classes.reschedule} color="secondary" onClick={() => selectTime('none')}>
               Reschedule
             </Button>
@@ -208,7 +217,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       {member.member_id === '' &&
         <EnterName createNewUser={(name: string) => createNewUser(name)} />
       }
-      <MeetingDetails meeting={meeting} />
+      <MeetingDetails meeting={meeting} member={member}/>
       <Grid container spacing={3}>
         <Grid item xs={12} md={12} lg={6}>
           <TimeTable

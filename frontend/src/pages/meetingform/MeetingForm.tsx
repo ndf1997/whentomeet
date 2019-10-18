@@ -56,6 +56,7 @@ function MeetingForm(props: MeetingFormProps) {
       location,
       [],
       "none",
+      "none",
       "none"
     );
     server.post('/meeting', JSON.stringify(newMeeting))
@@ -68,7 +69,8 @@ function MeetingForm(props: MeetingFormProps) {
           location,
           [],
           "none",
-          response.data.url
+          response.data.url,
+          "none"
         )
         const meeting_id: string = response.data.meeting_id;
         server.put('/meeting', JSON.stringify(editMeeting))
