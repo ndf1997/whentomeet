@@ -62,16 +62,46 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       action: "addMeeting",
       meeting_id: meeting_id
     };
-    ws.onopen = message => {ws.send(JSON.stringify(connect));
-    console.log(message);}
+    ws.onopen = message => {
+      ws.send(JSON.stringify(connect));
+    }
     ws.onmessage = evt => {
       var str = evt.data;
       str = str.substring(5);
       var temp = JSON.parse(str);
       console.log(temp);
-      console.log(meeting);
       const newMeeting: Meeting = new Meeting(temp.meeting_id, temp.title,
         temp.description, temp.location, temp.members, temp.time, temp.url, temp.creatorId);
+      console.log(newMeeting);
+      server.get('/meeting?meeting_id=' + meeting_id)
+        .then(response => {
+          const meet = response.data.Item;
+          // Get the members by meeting_id
+          server.get('/member?meeting_id=' + meeting_id)
+            .then(response => {
+              const memberList = response.data.members;
+              const members: Member[] = [];
+
+              for (let i = 0; i < memberList.length; i++ ) {
+                const mem = memberList[i];
+                const addMember = new Member(meeting_id, mem.member_id, mem.name);
+                const days: Day[] = [];
+
+                for (let j = 0; j < mem.days.length; j++) {
+                  days.push(new Day(mem.days[j].name, mem.days[j].hours));
+                }
+
+                addMember.days = days;
+                members.push(addMember);
+              }
+
+              setMeeting(new Meeting(
+                meet.meeting_id, meet.title, meet.description, meet.location, members,
+                meet.selectedTime, meet.url, meet.creatorId
+              ));
+              setLoadingMeeting(false);
+            })
+        });
     }
     if (typeof meeting_id !== 'undefined') {
       // Get the meeting by meeting_id
