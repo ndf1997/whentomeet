@@ -47,7 +47,7 @@ function PollingComponent(props: InferProps<typeof PollingComponent.propTypes>) 
           </div>
           <div className={classes.root}>
             <BorderLinearProgress
-              //style={{ width: '58%' , marginLeft: '30px' }}
+              style={{ width: '58%' , marginLeft: '30px' }}
               className={classes.margin}
               variant="determinate"
               color="secondary"

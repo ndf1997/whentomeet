@@ -16,13 +16,6 @@ function PollingDisplay(props: InferProps<typeof PollingDisplay.propTypes>){
         baseURL: serverURL,
     })
     const initialArray: Answer[] = [];
-    // function componentDidMount() {
-    //     server.get('/meeting?meeting_id=' + props.)
-    //     .then(response => {
-            // const meet = response.data.Item;
-            // console.log(meet);
-            // const answer = meet.poll.answer;
-            // console.log(answer);s
 
             const answer = props.meeting.poll.answer;
             const question = props.meeting.poll.question;
@@ -39,16 +32,7 @@ function PollingDisplay(props: InferProps<typeof PollingDisplay.propTypes>){
               if(typeof memArr !== 'undefined') {
                   memNum = memArr.length;
               }
-             
-    //     })
-    // }
-    //data containing answers
-    // const initialArray: Array<any> = [ 
-    //     {value: 'A', count: 0, selected: false},
-    //     {value: 'B', count: 0, selected: false},
-    //     {value: 'C', count: 0, selected: false},
-    //     {value: 'D', count: 0, selected: false},
-    //      ];
+
 
     const [Answers, setAnswers] = useState(initialArray);
     console.log(initialArray);
@@ -67,6 +51,12 @@ function PollingDisplay(props: InferProps<typeof PollingDisplay.propTypes>){
         temp[index].selected = true;
         setAnswers(temp);
         console.log('incremented')
+
+        server.put('/meeting?meeting_id=' + props.meeting.meeting_id, JSON.stringify(props.meeting))
+        .then(response => {
+            console.log(response);
+        });
+
     }
     
     return(
@@ -96,7 +86,7 @@ PollingDisplay.propTypes = {
     open: PropTypes.bool.isRequired,
     closePollingDialog: PropTypes.func.isRequired,
     meeting: MeetingPropType.isRequired,
-    member: MemberPropType.isRequired
+    member: MemberPropType.isRequired,
 }
 
 export default PollingDisplay;
