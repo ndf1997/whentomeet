@@ -311,6 +311,11 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         .then(response => {
             setMeeting(meeting);
             setPost('');
+            const update = {
+              action: "onUpdate",
+              message: meeting
+            };
+            ws.send(JSON.stringify(update));
         });
     }
 
