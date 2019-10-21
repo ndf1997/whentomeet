@@ -106,12 +106,20 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
                 addMember.days = days;
                 members.push(addMember);
               }
-
+              const comments: Comment[] = [];
+              const ComList = meet.commentlist;
+              if (typeof ComList !== 'undefined'){
+                for (let i = 0; i < ComList.length; i++ ) {
+                  const c = ComList[i];
+                  comments[i] = c;
+                }
+              }
               setMeeting(new Meeting(
                 meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url, meet.creatorId
+                meet.selectedTime, meet.url, comments, meet.poll, meet.creatorId
               ));
               setLoadingMeeting(false);
+              
             })
         });
     }
@@ -169,6 +177,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         setLoadingMember(false);
       }
     }
+    
   }
   useEffect(() => componentDidMount(), [])
 
@@ -284,25 +293,6 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   }
 
 /* Comment Section */
-const comments: Comment[] = [];
-  
-
-  server.get('/meeting?meeting_id=' + meeting_id)
-  .then(response => {
-    const ComList = response.data.Item.commentlist;
-    console.log(response.data);
-    if (typeof ComList !== 'undefined'){
-      for (let i = 0; i < ComList.length; i++ ) {
-        console.log(ComList[i]);
-        const c = ComList[i];
-        comments[i] = c;
-      }
-      ;
-      setMeeting(meeting);
-    }
-    
-  
-  });
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>){
       setPost(event.target.value);
