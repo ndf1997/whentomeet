@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     textAlign: 'center'
   },
   button: {
+    marginRight: theme.spacing(1),
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
   },
@@ -146,7 +147,7 @@ function MeetingForm(props: MeetingFormProps) {
             <AddTitle titleHandler={titleHandler}/>
             <AddDescription descriptionHandler={descriptionHandler}/>
             <AddLocation locationHandler={locationHandler}/>
-            <Button variant="outlined" onClick={pollEdit}>Create Poll</Button>
+            <Button variant="outlined" onClick={pollEdit} className={classes.button}>Create Poll</Button>
             <Button variant="outlined" type="submit" className={classes.button}>
               Create Meeting
             </Button> 

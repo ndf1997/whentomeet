@@ -18,6 +18,7 @@ import { Day } from '../../types/Day';
 import { Comment } from '../../types/Comment';
 import CommentSection from '../../components/CommentSection';
 import TextField from '@material-ui/core/TextField';
+import CommentPane from '../../components/CommentPane';
 
 type TParams =  { meeting_id: string };
 
@@ -294,8 +295,8 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
 /* Comment Section */
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>){
-      setPost(event.target.value);
+    function handleChange(comment: string){
+      setPost(comment);
     }
     function HandlePost(){
       var newPost = { author: member.name, text: post };
@@ -336,23 +337,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           />
         </Grid>
       </Grid>
-      <div style={{ position: 'fixed', bottom: '0', display: 'flex', width: '60%'}}>
-                                    <TextField
-                                        id="standard-full-width"
-                                        onChange={handleChange}
-                                        value={post}
-                                        label="Add a Comment"
-                                        style={{ margin: 8, width: '80%' }}
-                                        placeholder="Say Something"
-                                        margin="normal"
-                                        InputLabelProps={{
-                                        shrink: true
-                                        }}
-                                    /> 
-                                    <Button variant="contained" color="primary" className={classes.button} onClick={HandlePost}>
-                                            Post
-                                    </Button>  
-                                </div>
+      <CommentPane commentHandler={handleChange} handlePost={HandlePost} />
       <CommentSection commentList={meeting.commentlist} />
     </div>
   );
