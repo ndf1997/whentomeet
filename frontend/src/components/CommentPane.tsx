@@ -18,7 +18,9 @@ function CommentPane(props: InferProps<typeof CommentPane.propTypes>){
     }
 
     return(
-        <div style={{ position: 'fixed', bottom: '0', display: 'flex', width: '60%'}}>
+        <div style={{ display: 'flex', width: '100%', marginBottom: '30px', marginTop: '30px'}}>
+            <br>
+            </br>
             <TextField
                 id="standard-full-width"
                 onChange={commentEdit}
