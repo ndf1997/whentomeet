@@ -14,8 +14,10 @@ function Comment(props: InferProps<typeof Comment.propTypes>){
         </div>
     );
 }
+
 Comment.propTypes = {
     author: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-  }
+}
+
 export default Comment;

@@ -3,6 +3,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { green } from '@material-ui/core/colors';
+import PropTypes, {InferProps} from 'prop-types';
 import {
     createStyles,
     fade,
@@ -30,12 +31,13 @@ const theme = createMuiTheme({
     },
   });
   
-export default function Answer () {
+export default function Answertsx (props: InferProps<typeof Answertsx.propTypes>) {
     const classes = useStyles();
     const [answer, setAnswer] = React.useState('');
 
   function textHandler(event: React.ChangeEvent<HTMLInputElement>) {
     setAnswer(event.target.value);
+    props.setAnswerInArray(event.target.value, props.id)
   }
     
     return (
@@ -54,4 +56,9 @@ export default function Answer () {
         </div>
        
     );
+}
+
+Answertsx.propTypes = {
+  id: PropTypes.number.isRequired,
+  setAnswerInArray: PropTypes.func.isRequired
 }

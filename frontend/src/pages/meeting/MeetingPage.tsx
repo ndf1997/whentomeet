@@ -15,6 +15,9 @@ import { serverURL } from '../../types/constants';
 import { Meeting } from '../../types/Meeting';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
+import { Comment } from '../../types/Comment';
+import CommentSection from '../../components/CommentSection';
+import TextField from '@material-ui/core/TextField';
 
 type TParams =  { meeting_id: string };
 
@@ -35,7 +38,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   reschedule: {
     marginTop: theme.spacing(4),
-  }
+  },
+  button: {
+    margin: theme.spacing(1),
+  },
+  input: {
+    display: 'none',
+  },
 }));
 
 function MeetingPage({ match }: RouteComponentProps<TParams>) {
@@ -44,6 +53,9 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const [member, setMember] = useState(new Member());
   const [loadingMeeting, setLoadingMeeting] = useState(true);
   const [loadingMember, setLoadingMember] = useState(true);
+  const comm: Comment[] = [];
+  const [CommentList,setCommentList] = useState(comm);
+  const [post,setPost] = useState('');
   const server = axios.create({
     baseURL: serverURL,
   });
@@ -51,14 +63,15 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   let memberData: Member = member;
   let updatingHours: boolean = false;
 
-  const meeting_id: string = match.params.meeting_id;
-
+  const meeting_id: string =  match.params.meeting_id;
+  //const meeting_id: string = '32nfcA2-';
   function componentDidMount() {
     if (typeof meeting_id !== 'undefined') {
       // Get the meeting by meeting_id
       server.get('/meeting?meeting_id=' + meeting_id)
         .then(response => {
           const meet = response.data.Item;
+
           // Get the members by meeting_id
           server.get('/member?meeting_id=' + meeting_id)
             .then(response => {
@@ -80,7 +93,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
               setMeeting(new Meeting(
                 meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url
+                meet.selectedTime, meet.url, meet.commentlist, meet.poll
               ));
               setLoadingMeeting(false);
             })
@@ -157,13 +170,14 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members, time, meeting.url);
+      meeting.description, meeting.location, meeting.members, time, meeting.url, meeting.commentlist, meeting.poll);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
         setMeeting(newMeeting);
       })
   }
+
 
   if (loadingMeeting || loadingMember) {
     return (
@@ -199,6 +213,43 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     )
   }
 
+/* Comment Section */
+const comments: Comment[] = [];
+  
+
+  server.get('/meeting?meeting_id=' + meeting_id)
+  .then(response => {
+    const ComList = response.data.Item.commentlist;
+    console.log(response.data);
+    if (typeof ComList !== 'undefined'){
+      for (let i = 0; i < ComList.length; i++ ) {
+        console.log(ComList[i]);
+        const c = ComList[i];
+        comments[i] = c;
+      }
+      ;
+      setMeeting(meeting);
+    }
+    
+  
+  });
+
+    function handleChange(event: React.ChangeEvent<HTMLInputElement>){
+      setPost(event.target.value);
+    }
+    function HandlePost(){
+      var newPost = { author: member.name, text: post };
+      var temp1 = [...meeting.commentlist];
+      var temp = temp1.concat(newPost);
+      setCommentList(temp);
+      meeting.commentlist = temp;
+
+      server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meeting))
+        .then(response => {
+            console.log(response);
+        });
+    }
+
   return (
     <div className="MeetingPage">
       <HeaderBar isMeetingPage meetingId={meeting.meeting_id} />
@@ -225,8 +276,27 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           />
         </Grid>
       </Grid>
+      <div style={{ position: 'fixed', bottom: '0', display: 'flex', width: '60%'}}>
+                                    <TextField
+                                        id="standard-full-width"
+                                        onChange={handleChange}
+                                        value={post}
+                                        label="Add a Comment"
+                                        style={{ margin: 8, width: '80%' }}
+                                        placeholder="Say Something"
+                                        margin="normal"
+                                        InputLabelProps={{
+                                        shrink: true
+                                        }}
+                                    /> 
+                                    <Button variant="contained" color="primary" className={classes.button} onClick={HandlePost}>
+                                            Post
+                                    </Button>  
+                                </div>
+      <CommentSection commentList={meeting.commentlist} />
     </div>
   );
 }
+
 
 export default MeetingPage;

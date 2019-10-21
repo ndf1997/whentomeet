@@ -12,6 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import {History} from 'history';
 import { serverURL } from '../../types/constants';
 import { Meeting } from '../../types/Meeting';
+import { Poll } from '../../types/Poll';
+import PollingForm from '../../Polling/PollingForm';
+import {Answer} from '../../types/Answer';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -42,8 +45,10 @@ function MeetingForm(props: MeetingFormProps) {
   const [redirect, setRedirect] = React.useState(false);
   const [location, setLocation] = React.useState();
   const [description, setDescription] = React.useState();
+  const [open, setOpen] = React.useState(false);
   const [meetingId, setMeetingId] = React.useState();
   const [meetingPage, setMeetingPage] = React.useState();
+  const [poll, setPoll] = React.useState(new Poll("none", []));
   const server = axios.create({
     baseURL: serverURL,
   });
@@ -56,7 +61,9 @@ function MeetingForm(props: MeetingFormProps) {
       location,
       [],
       "none",
-      "none"
+      "none",
+      [],
+      poll
     );
     server.post('/meeting', JSON.stringify(newMeeting))
       .then(response => {
@@ -68,7 +75,9 @@ function MeetingForm(props: MeetingFormProps) {
           location,
           [],
           "none",
-          response.data.url
+          response.data.url,
+          [],
+          poll
         )
         const meeting_id: string = response.data.meeting_id;
         server.put('/meeting', JSON.stringify(editMeeting))
@@ -83,7 +92,16 @@ function MeetingForm(props: MeetingFormProps) {
           });
       });
   }
+  function pollHandler(pollEdit: Poll) {
+    setPoll(pollEdit);
 
+  }
+  function pollCloseHandler() {
+    setOpen(false);
+  }
+  function pollEdit() {
+    setOpen(true);
+  }
   function titleHandler(event: React.ChangeEvent<HTMLInputElement>) {
     setTitle(event.target.value);
   }
@@ -110,9 +128,14 @@ function MeetingForm(props: MeetingFormProps) {
   const classes = useStyles();
   return (
     <div className="MeetingForm">
-    <HeaderBar />
+   // <HeaderBar />
     {redirectHandler()}
     <form onSubmit={onSubmit}>
+        <PollingForm
+          pollHandler={pollHandler}
+          open={open}
+          pollCloseHandler={pollCloseHandler}
+          />
         <div className={classes.root}>
           <Typography variant="h3" gutterBottom >
             Create Meeting
@@ -121,6 +144,7 @@ function MeetingForm(props: MeetingFormProps) {
             <AddTitle titleHandler={titleHandler}/>
             <AddDescription descriptionHandler={descriptionHandler}/>
             <AddLocation locationHandler={locationHandler}/>
+            <Button variant="outlined" onClick={pollEdit}>Create Poll</Button>
             <Button variant="outlined" type="submit" className={classes.button}>
               Create Meeting
             </Button> 
