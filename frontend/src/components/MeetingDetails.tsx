@@ -5,10 +5,12 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { MeetingPropType } from '../types/Meeting';
 import EditMeeting from './EditMeeting';
+import { MemberPropType, Member } from '../types/Member';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(10),
   },
   description: {
     maxWidth: 500,
@@ -16,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
-  const { meeting } = props;
+  const meeting = props.meeting;
+  const member = props.member;
   const classes = useStyles();
   const isSelected = meeting.selectedTime !== 'none';
   const [title, setTitle] = React.useState(meeting.title);
@@ -41,7 +44,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
     setOpen(true);
   }
   return (
-    <div className={classes.root}>
+    <div className={isSelected ? '' : classes.root}>
       <EditMeeting 
         meeting={meeting}
         titleHandler={titleHandler} 
@@ -68,7 +71,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
           Meeting Time: {meeting.selectedTime}
         </Typography>
       }
-      {!isSelected &&
+      {!isSelected && meeting.creatorId == member.member_id &&
         <Button variant="outlined" onClick={meetingEdit}>
           Edit Meeting
         </Button>
@@ -79,6 +82,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
 
 MeetingDetails.propTypes = {
   meeting: MeetingPropType.isRequired,
+  member: MemberPropType.isRequired,
 }
 
 export default MeetingDetails;

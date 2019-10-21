@@ -63,7 +63,8 @@ function MeetingForm(props: MeetingFormProps) {
       "none",
       "none",
       [],
-      poll
+      poll,
+      "none"
     );
     server.post('/meeting', JSON.stringify(newMeeting))
       .then(response => {
@@ -77,7 +78,8 @@ function MeetingForm(props: MeetingFormProps) {
           "none",
           response.data.url,
           [],
-          poll
+          poll,
+          "none"
         )
         const meeting_id: string = response.data.meeting_id;
         server.put('/meeting', JSON.stringify(editMeeting))

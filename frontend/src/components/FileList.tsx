@@ -16,7 +16,7 @@ function FileList(props: InferProps<typeof FileList.propTypes>) {
     <div>
       <List>
         {props.files.map(file => (
-          <ListItem key={file.filename}>
+          <ListItem key={file.url}>
             <ListItemIcon>
               <FolderIcon />
             </ListItemIcon>

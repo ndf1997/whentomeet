@@ -13,9 +13,11 @@ export class Meeting {
   url: string;
   commentlist: Comment[];
   poll: Poll;
+  creatorId: string;
 
   constructor(meeting_id: string = '', title: string = '', description: string = '',
-    location: string = '', members: Member[] = [], selectedTime: string = 'none', url: string = '', commentlist: Comment[] = [], poll: Poll = new Poll('',[])
+    location: string = '', members: Member[] = [], selectedTime: string = 'none', url: string = '', commentlist: Comment[] = [], 
+    poll: Poll = new Poll('',[]), creatorId: string = ''
     ) {
       this.meeting_id = meeting_id;
       this.title = title;
@@ -26,6 +28,7 @@ export class Meeting {
       this.url = url;
       this.commentlist = commentlist;
       this.poll = poll;
+      this.creatorId = creatorId;
     }
 }
 
@@ -39,4 +42,5 @@ export const MeetingPropType = PropTypes.shape({
   url: PropTypes.string.isRequired,
   commentlist: PropTypes.arrayOf(CommentPropType.isRequired).isRequired,
   poll: PollPropType.isRequired,
+  creatorId: PropTypes.string,
 });

@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     top: '25%',
     transform: 'translate(-50%, -25%)'
   },
+  headerSpacing: {
+    marginTop: theme.spacing(10),
+  },
   paper: {
     textAlign: 'center',
     square: 'true',
@@ -59,6 +62,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const server = axios.create({
     baseURL: serverURL,
   });
+  const ws = new WebSocket('wss://4q2r9vhqc6.execute-api.us-east-2.amazonaws.com/dev');
   
   let memberData: Member = member;
   let updatingHours: boolean = false;
@@ -66,6 +70,51 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   const meeting_id: string =  match.params.meeting_id;
   //const meeting_id: string = '32nfcA2-';
   function componentDidMount() {
+    const connect = {
+      action: "addMeeting",
+      meeting_id: meeting_id
+    };
+    ws.onopen = message => {
+      ws.send(JSON.stringify(connect));
+    }
+    ws.onmessage = evt => {
+      var str = evt.data;
+      str = str.substring(5);
+      var temp = JSON.parse(str);
+      console.log(temp);
+      const newMeeting: Meeting = new Meeting(temp.meeting_id, temp.title,
+        temp.description, temp.location, temp.members, temp.time, temp.url, temp.creatorId);
+      console.log(newMeeting);
+      server.get('/meeting?meeting_id=' + meeting_id)
+        .then(response => {
+          const meet = response.data.Item;
+          // Get the members by meeting_id
+          server.get('/member?meeting_id=' + meeting_id)
+            .then(response => {
+              const memberList = response.data.members;
+              const members: Member[] = [];
+
+              for (let i = 0; i < memberList.length; i++ ) {
+                const mem = memberList[i];
+                const addMember = new Member(meeting_id, mem.member_id, mem.name);
+                const days: Day[] = [];
+
+                for (let j = 0; j < mem.days.length; j++) {
+                  days.push(new Day(mem.days[j].name, mem.days[j].hours));
+                }
+
+                addMember.days = days;
+                members.push(addMember);
+              }
+
+              setMeeting(new Meeting(
+                meet.meeting_id, meet.title, meet.description, meet.location, members,
+                meet.selectedTime, meet.url, meet.creatorId
+              ));
+              setLoadingMeeting(false);
+            })
+        });
+    }
     if (typeof meeting_id !== 'undefined') {
       // Get the meeting by meeting_id
       server.get('/meeting?meeting_id=' + meeting_id)
@@ -93,7 +142,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
               setMeeting(new Meeting(
                 meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url, meet.commentlist, meet.poll
+                meet.selectedTime, meet.url, meet.commentlist, meet.poll, meet.creatorId
               ));
               setLoadingMeeting(false);
             })
@@ -131,10 +180,25 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       server.post('/member?meeting_id=' + meeting_id, JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;
+          console.log(response.data);
 
           localStorage.setItem(`meetingId:${meeting_id}`, member_id);
           memberData = new Member(meeting_id, member_id, name);
+          console.log(memberData);
           setMember(memberData);
+          if (meeting.creatorId == "none") {
+            server.get('/meeting?meeting_id=' + meeting_id).then(response=>{
+              const meet = response.data.Item;
+              meet.creatorId = member_id;
+              server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meet))
+            .then(response => { 
+              setMeeting(meet);
+              const update = {
+                action: "onUpdate",
+                message: meet
+              };
+            })});
+          }
         });
     }
   }
@@ -147,7 +211,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function updateTimes(day: string, index: number) {
     const newHours: Day[] = memberData.days;
-
+    console.log(day);
     for (let i = 0; i < newHours.length; i++) {
       const d: Day = newHours[i];
       if (d.name === day) {
@@ -159,10 +223,16 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       updatingHours = true;
       wait().then(() => {
         updatingHours = false;
-
         const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`)
         if (member_id !== null) {
-          server.put(`/member?meeting_id=` + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData));
+          console.log("here");
+          server.put('/member?meeting_id=' + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData)).then((response )=> {
+            console.log(response);
+            const update = {
+              action: "onUpdate",
+              message: meeting
+            };
+            ws.send(JSON.stringify(update));});
         }
       });
     }
@@ -170,7 +240,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function selectTime(time: string) {
     const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
-      meeting.description, meeting.location, meeting.members, time, meeting.url, meeting.commentlist, meeting.poll);
+      meeting.description, meeting.location, meeting.members, time, meeting.url, meeting.commentlist, meeting.poll, meeting.creatorId);
 
     server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
       .then(() => {
@@ -188,7 +258,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
           justify="center"
           alignItems="center"
         >
-          <CircularProgress/>
+          <CircularProgress className={classes.headerSpacing}/>
         </Grid>
       </div>
     );
@@ -203,7 +273,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         }
         <div className={classes.root}>
           <Paper className={classes.paper}>
-            <MeetingDetails meeting={meeting} />
+            <MeetingDetails meeting={meeting} member={member}/>
             <Button className={classes.reschedule} color="secondary" onClick={() => selectTime('none')}>
               Reschedule
             </Button>
@@ -256,9 +326,9 @@ const comments: Comment[] = [];
       {member.member_id === '' &&
         <EnterName createNewUser={(name: string) => createNewUser(name)} />
       }
-      <MeetingDetails meeting={meeting} />
+      <MeetingDetails meeting={meeting} member={member}/>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TimeTable
             meeting={meeting}
             member={member}
@@ -266,7 +336,7 @@ const comments: Comment[] = [];
             selectTime={selectTime}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={12} lg={6}>
           <TimeTable
             meeting={meeting}
             member={member}

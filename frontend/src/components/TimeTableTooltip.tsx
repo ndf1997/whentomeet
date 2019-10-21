@@ -27,7 +27,7 @@ function TimeTableTooltip (props: InferProps<typeof TimeTableTooltip.propTypes>)
           {`Availability: ${percentage}`}
         </Typography>
         {members.map((member: Member) => (
-          <Typography className={classes.text} align="center">
+          <Typography key={member.member_id} className={classes.text} align="center">
             {member.name}
           </Typography>))
         }
