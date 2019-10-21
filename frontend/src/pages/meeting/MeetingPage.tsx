@@ -215,7 +215,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function wait() {
     return new Promise(resolve => {
-      setTimeout(resolve, 2000);
+      setTimeout(resolve, 1000);
     });
   }
 
@@ -284,9 +284,11 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         <div className={classes.root}>
           <Paper className={classes.paper}>
             <MeetingDetails meeting={meeting} member={member}/>
+            {meeting.creatorId === member.member_id &&
             <Button className={classes.reschedule} color="secondary" onClick={() => selectTime('none')}>
               Reschedule
             </Button>
+            }
           </Paper>
         </div>
       </div>
@@ -298,8 +300,8 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     function handleChange(comment: string){
       setPost(comment);
     }
-    function HandlePost(){
-      var newPost = { author: member.name, text: post };
+    function HandlePost(comment: string){
+      var newPost = { author: member.name, text: comment };
       var temp1 = [...meeting.commentlist];
       var temp = temp1.concat(newPost);
       setCommentList(temp);
@@ -307,7 +309,8 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
       server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meeting))
         .then(response => {
-            console.log(response);
+            setMeeting(meeting);
+            setPost('');
         });
     }
 
