@@ -33,7 +33,7 @@ const BorderLinearProgress = withStyles({
   
 function PollingComponent(props: InferProps<typeof PollingComponent.propTypes>) {
   const classes = useStyles();
-  const { count, value, onIncrement } = props;
+  const { count, value, onIncrement, totalMem} = props;
 
     return (
       <div>
@@ -47,11 +47,11 @@ function PollingComponent(props: InferProps<typeof PollingComponent.propTypes>) 
           </div>
           <div className={classes.root}>
             <BorderLinearProgress
-              style={{ width: '58%' , marginLeft: '30px' }}
+              //style={{ width: '58%' , marginLeft: '30px' }}
               className={classes.margin}
               variant="determinate"
               color="secondary"
-              value={10}
+              value={count/totalMem * 100}
             />
           </div>
       </div>
@@ -62,6 +62,7 @@ PollingComponent.propTypes = {
   count: PropTypes.number.isRequired,
   value: PropTypes.string.isRequired,
   onIncrement: PropTypes.func.isRequired,
+  totalMem: PropTypes.number.isRequired,
 }
 
 export default PollingComponent;

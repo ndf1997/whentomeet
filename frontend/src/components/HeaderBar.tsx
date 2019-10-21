@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import PropTypes, {InferProps} from 'prop-types';
 import FileManager from './FileManager';
+//import PollingDisplay from '../Polling/PollingDisplay';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -25,14 +26,21 @@ function HeaderBar(props: InferProps<typeof HeaderBar.propTypes>) {
   const { isMeetingPage, meetingId } = props;
   const classes = useStyles();
   const [openFileDialog, setOpenFileDialog] = React.useState(false);
+  const [openPollingDialog, setOpenPollingDialog] = React.useState(false);
+
 
   function closeFileDialog() {
     setOpenFileDialog(false);
   }
 
+  function closePollingDialog() {
+    setOpenPollingDialog(false);
+  }
+
   return (
     <div className={classes.root}>
       {isMeetingPage && <FileManager open={openFileDialog} closeFileDialog={closeFileDialog} meetingId={meetingId} />}
+      {/* {isMeetingPage && <PollingDisplay open={openPollingDialog} closePollingDialog={closePollingDialog} meeting={}/>} */}
       <AppBar position="fixed">
         <ToolBar>
           <MeetingRoomIcon className={classes.meetingIcon} />

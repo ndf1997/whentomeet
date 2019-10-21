@@ -70,14 +70,14 @@ function CommentSection(props: InferProps<typeof CommentSection.propTypes>){
                     <CssBaseline />
                         <Container fixed style={{overflow: 'scroll', height:'600px'}}>
                             <Typography component="div" style={{ backgroundColor: '#ADD8E6' }}>
-                                <div>
+                                
                                 {commentList.map(comment => (
                                     <Comment
                                         value={comment.text}
                                         author={comment.author}
                                     />
                                 ))}    
-                                </div>
+                                
                                 {/* <div style={{ position: 'fixed', bottom: '0', display: 'flex', width: '60%'}}>
                                     <TextField
                                         id="standard-full-width"

@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import { MeetingPropType } from '../types/Meeting';
 import EditMeeting from './EditMeeting';
 import { MemberPropType, Member } from '../types/Member';
+import PollingDisplay from '../Polling/PollingDisplay'
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -26,7 +27,8 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   const [location, setLocation] = React.useState(meeting.location);
   const [description, setDescription] = React.useState(meeting.description);
   const [open, setOpen] = React.useState(false);
-  
+  const [pollOpen, setPollOpen] = React.useState(false);
+
   function titleHandler(titleEdit: string) {
     setTitle(titleEdit);
   }
@@ -43,6 +45,13 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
   function meetingEdit() {
     setOpen(true);
   }
+  function pollingPart() {
+    setPollOpen(true);
+  }
+  function pollingCloseHandler() {
+    setPollOpen(false);
+  }
+
   return (
     <div className={isSelected ? '' : classes.root}>
       <EditMeeting 
@@ -52,6 +61,7 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
         locationHandler={locationHandler}
         open={open}
         editHandler={editHandler}/>
+      <PollingDisplay open={pollOpen} closePollingDialog={pollingCloseHandler} meeting={meeting} member={member}/>
       <Typography variant="h3" gutterBottom >
         {title}
       </Typography>
@@ -71,7 +81,12 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
           Meeting Time: {meeting.selectedTime}
         </Typography>
       }
-      {!isSelected && meeting.creatorId == member.member_id &&
+      {!isSelected && meeting.poll.question !== 'none' &&
+        <Button variant="outlined" onClick={pollingPart}>
+          Poll
+        </Button>
+      }
+      {!isSelected && meeting.creatorId === member.member_id &&
         <Button variant="outlined" onClick={meetingEdit}>
           Edit Meeting
         </Button>

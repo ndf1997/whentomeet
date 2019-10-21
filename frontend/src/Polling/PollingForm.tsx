@@ -53,7 +53,7 @@ export default function PollingForm(props: InferProps<typeof PollingForm.propTyp
     function addAnswers() { 
       let ans = '';
       setAnswers([...Answers, ans]);
-      setAnswer([...AnswerArray, new Answer(ans, 0, AnswerArray.length)]);
+      setAnswer([...AnswerArray, new Answer(ans, 0, AnswerArray.length, false)]);
       console.log(AnswerArray);
     };
 
@@ -64,7 +64,7 @@ export default function PollingForm(props: InferProps<typeof PollingForm.propTyp
         AnswerArray[id] = temp;
       }
       else {
-        setAnswer([...AnswerArray, new Answer(ans, 0, AnswerArray.length)]);
+        setAnswer([...AnswerArray, new Answer(ans, 0, AnswerArray.length, false)]);
         console.log(AnswerArray);
       }
     }
