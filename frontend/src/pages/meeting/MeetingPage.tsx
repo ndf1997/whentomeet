@@ -17,7 +17,6 @@ import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 import { Comment } from '../../types/Comment';
 import CommentSection from '../../components/CommentSection';
-import TextField from '@material-ui/core/TextField';
 import CommentPane from '../../components/CommentPane';
 
 type TParams =  { meeting_id: string };
@@ -69,100 +68,68 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
   let updatingHours: boolean = false;
 
   const meeting_id: string =  match.params.meeting_id;
-  //const meeting_id: string = '32nfcA2-';
+
+  function getMeeting () {
+    server.get('/meeting?meeting_id=' + meeting_id)
+      .then(response => {
+        const meet = response.data.Item;
+        // Get the members by meeting_id
+        server.get('/member?meeting_id=' + meeting_id)
+          .then(response => {
+            const memberList = response.data.members;
+            const members: Member[] = [];
+
+            for (let i = 0; i < memberList.length; i++ ) {
+              const mem = memberList[i];
+              const addMember = new Member(meeting_id, mem.member_id, mem.name);
+              const days: Day[] = [];
+
+              for (let j = 0; j < mem.days.length; j++) {
+                days.push(new Day(mem.days[j].name, mem.days[j].hours));
+              }
+
+              addMember.days = days;
+              members.push(addMember);
+            }
+            const comments: Comment[] = [];
+            const ComList = meet.commentlist;
+            if (typeof ComList !== 'undefined'){
+              for (let i = 0; i < ComList.length; i++ ) {
+                const c = ComList[i];
+                comments[i] = c;
+              }
+            }
+            setMeeting(new Meeting(
+              meet.meeting_id, meet.title, meet.description, meet.location, members,
+              meet.selectedTime, meet.url, comments, meet.poll, meet.creatorId
+            ));
+            setLoadingMeeting(false);
+            
+          })
+      });
+  }
+
   function componentDidMount() {
     const connect = {
       action: "addMeeting",
       meeting_id: meeting_id
     };
-    ws.onopen = message => {
+    ws.onopen = () => {
       ws.send(JSON.stringify(connect));
     }
-    ws.onmessage = evt => {
-      var str = evt.data;
-      str = str.substring(5);
-      var temp = JSON.parse(str);
-      console.log(temp);
-      const newMeeting: Meeting = new Meeting(temp.meeting_id, temp.title,
-        temp.description, temp.location, temp.members, temp.time, temp.url, temp.creatorId);
-      console.log(newMeeting);
-      server.get('/meeting?meeting_id=' + meeting_id)
-        .then(response => {
-          const meet = response.data.Item;
-          // Get the members by meeting_id
-          server.get('/member?meeting_id=' + meeting_id)
-            .then(response => {
-              const memberList = response.data.members;
-              const members: Member[] = [];
-
-              for (let i = 0; i < memberList.length; i++ ) {
-                const mem = memberList[i];
-                const addMember = new Member(meeting_id, mem.member_id, mem.name);
-                const days: Day[] = [];
-
-                for (let j = 0; j < mem.days.length; j++) {
-                  days.push(new Day(mem.days[j].name, mem.days[j].hours));
-                }
-
-                addMember.days = days;
-                members.push(addMember);
-              }
-              const comments: Comment[] = [];
-              const ComList = meet.commentlist;
-              if (typeof ComList !== 'undefined'){
-                for (let i = 0; i < ComList.length; i++ ) {
-                  const c = ComList[i];
-                  comments[i] = c;
-                }
-              }
-              setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url, comments, meet.poll, meet.creatorId
-              ));
-              setLoadingMeeting(false);
-              
-            })
-        });
+    ws.onmessage = () => {
+      getMeeting();
     }
     if (typeof meeting_id !== 'undefined') {
       // Get the meeting by meeting_id
-      server.get('/meeting?meeting_id=' + meeting_id)
-        .then(response => {
-          const meet = response.data.Item;
-
-          // Get the members by meeting_id
-          server.get('/member?meeting_id=' + meeting_id)
-            .then(response => {
-              const memberList = response.data.members;
-              const members: Member[] = [];
-
-              for (let i = 0; i < memberList.length; i++ ) {
-                const mem = memberList[i];
-                const addMember = new Member(meeting_id, mem.member_id, mem.name);
-                const days: Day[] = [];
-
-                for (let j = 0; j < mem.days.length; j++) {
-                  days.push(new Day(mem.days[j].name, mem.days[j].hours));
-                }
-
-                addMember.days = days;
-                members.push(addMember);
-              }
-
-              setMeeting(new Meeting(
-                meet.meeting_id, meet.title, meet.description, meet.location, members,
-                meet.selectedTime, meet.url, meet.commentlist, meet.poll, meet.creatorId
-              ));
-              setLoadingMeeting(false);
-            })
-        });
+      getMeeting();
       
       const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`);
       if (member_id !== null) {
         // Get the current member
         server.get('/member?meeting_id=' + meeting_id + '&member_id=' + member_id)
         .then(response => {
-            const m = response.data;
+          const m = response.data;
             const days: Day[] = [];
 
             for (let i = 0; i < m.days.length; i++) {
@@ -190,23 +157,18 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
       server.post('/member?meeting_id=' + meeting_id, JSON.stringify(newMember))
         .then(response => {
           const member_id: string = response.data.member_id;
-          console.log(response.data);
 
           localStorage.setItem(`meetingId:${meeting_id}`, member_id);
           memberData = new Member(meeting_id, member_id, name);
-          console.log(memberData);
           setMember(memberData);
+          getMeeting();
           if (meeting.creatorId == "none") {
             server.get('/meeting?meeting_id=' + meeting_id).then(response=>{
               const meet = response.data.Item;
               meet.creatorId = member_id;
               server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meet))
-            .then(response => { 
+            .then(() => { 
               setMeeting(meet);
-              const update = {
-                action: "onUpdate",
-                message: meet
-              };
             })});
           }
         });
@@ -221,7 +183,6 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
 
   function updateTimes(day: string, index: number) {
     const newHours: Day[] = memberData.days;
-    console.log(day);
     for (let i = 0; i < newHours.length; i++) {
       const d: Day = newHours[i];
       if (d.name === day) {
@@ -235,9 +196,7 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
         updatingHours = false;
         const member_id: string | null = localStorage.getItem(`meetingId:${meeting_id}`)
         if (member_id !== null) {
-          console.log("here");
           server.put('/member?meeting_id=' + meeting_id + '&member_id=' + member_id, JSON.stringify(memberData)).then((response )=> {
-            console.log(response);
             const update = {
               action: "onUpdate",
               message: meeting
@@ -295,29 +254,30 @@ function MeetingPage({ match }: RouteComponentProps<TParams>) {
     )
   }
 
-/* Comment Section */
+  /* Comment Section */
 
-    function handleChange(comment: string){
-      setPost(comment);
-    }
-    function HandlePost(comment: string){
-      var newPost = { author: member.name, text: comment };
-      var temp1 = [...meeting.commentlist];
-      var temp = temp1.concat(newPost);
-      setCommentList(temp);
-      meeting.commentlist = temp;
+  function handleChange(comment: string){
+    setPost(comment);
+  }
+  function HandlePost(comment: string){
+    var newPost = { author: member.name, text: comment };
+    var temp1 = [...meeting.commentlist];
+    var temp = temp1.concat(newPost);
+    setCommentList(temp);
+    const newMeeting: Meeting = new Meeting(meeting.meeting_id, meeting.title,
+      meeting.description, meeting.location, meeting.members, meeting.selectedTime, meeting.url, temp, meeting.poll, meeting.creatorId);
 
-      server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(meeting))
-        .then(response => {
-            setMeeting(meeting);
-            setPost('');
-            const update = {
-              action: "onUpdate",
-              message: meeting
-            };
-            ws.send(JSON.stringify(update));
-        });
-    }
+    server.put('/meeting?meeting_id=' + meeting_id, JSON.stringify(newMeeting))
+      .then(() => {
+        setMeeting(newMeeting);
+        setPost('');
+        const update = {
+          action: "onUpdate",
+          message: newMeeting
+        };
+        ws.send(JSON.stringify(update));
+      });
+  }
 
   return (
     <div className="MeetingPage">
