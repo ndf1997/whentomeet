@@ -31,8 +31,10 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
   useEffect(() => getFiles(), []);
 
   function deleteFile(filename: string) {
-    server.delete(`/files?meeting_id=` + meetingId + '&filename=' + filename)
+    files.forEach((file: File) => {
+      server.delete(`/files?meeting_id=` + meetingId + '&filename=' + file.filename)
       .then(() => getFiles());
+    });
   }
 
   return (
