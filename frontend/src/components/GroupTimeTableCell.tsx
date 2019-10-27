@@ -23,7 +23,7 @@ function findAvailableMembers(day: string, index: number, members: Member[]) {
 function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTypes>) {
   const { day, members, index } = props;
   const availableMembers: Member[] = findAvailableMembers(day, index, members);
-  const percentage: string = Math.floor((availableMembers.length / members.length) * 100) + '%';
+  const percentage: string = "" + availableMembers.length / members.length;
 
   const classes = makeStyles(() => createStyles({
     cell: {
@@ -31,11 +31,11 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
       '&::after': {
         content: '""',
         position: 'absolute',
-        background: percentage === '100%' ? '#8bc34a' : 'teal',
+        background: percentage === '1' ? '#8bc34a' : 'teal',
         top: 0,
         bottom: 0,
         left: 0,
-        width: percentage,
+        width: (parseFloat(percentage) * 100) + '%',
       },
       borderRight: 'solid',
       borderRightColor: 'rgba(0, 0, 0, 0.07)',
@@ -44,7 +44,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
   }))();
 
   return (
-    <TimeTableTooltip {...props} percentage={percentage} members={availableMembers} >
+    <TimeTableTooltip {...props} percentage={percentage + '%'} members={availableMembers} >
       <TableCell className={classes.cell} onClick={() => props.handleOpen(`${props.day}, ${props.time}`)}>
       </TableCell>
     </TimeTableTooltip>
