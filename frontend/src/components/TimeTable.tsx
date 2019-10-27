@@ -38,6 +38,7 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
   const { meeting, member, isGroupTable, updateTimes, selectTime } = props;
   const [open, setOpen] = React.useState(false);
   const [time, setTime] = React.useState('');
+  const [timePicked, setTimePicked] = React.useState(false);
   let filteredDays: string[] = [];
   if (isGroupTable) {
     for(let i = 0; i < days.length; i++) {
@@ -55,11 +56,13 @@ function TimeTable (props: InferProps<typeof TimeTable.propTypes>) {
   const classes = useStyles();
 
   function handleOpen(time: string) {
+    if (timePicked) return;
     setTime(time);
     setOpen(true);
   }
 
   function handleSelection(time: string) {
+    setTimePicked(true);
     if (time !== '') {
       selectTime(time);
     }
