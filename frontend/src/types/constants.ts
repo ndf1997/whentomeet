@@ -11,8 +11,8 @@ export const days: string[] = [
   'Tuesday',
   'Wednesday',
   'Thursday',
-  'Friday',
   'Saturday',
+  'Friday',
 ];
 
 export const times: string[] = [
