@@ -35,7 +35,7 @@ function TimeTableCell (props: InferProps<typeof TimeTableCell.propTypes>) {
 
   const clickHandler = () => {
     updateTimes(day, index);
-    setIsSelected(!isSelected);
+    setIsSelected(true);
   }
 
   const hoverHandler = (event: MouseEvent) => {
