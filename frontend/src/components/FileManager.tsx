@@ -47,7 +47,7 @@ function FileManager(props: InferProps<typeof FileManager.propTypes>) {
         <FileList files={files} deleteFile={deleteFile} />
       </DialogContent>
       <DialogActions>
-        <Button>
+        <Button onClick={() => closeFileDialog()}>
           Cancel
         </Button>
         <UploadFiles meetingId={meetingId} getFiles={getFiles} />
