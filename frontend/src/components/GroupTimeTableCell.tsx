@@ -44,7 +44,7 @@ function GroupTimeTableCell (props: InferProps<typeof GroupTimeTableCell.propTyp
   }))();
 
   return (
-    <TimeTableTooltip {...props} percentage={percentage + '%'} members={members} >
+    <TimeTableTooltip {...props} percentage={percentage + '%'} members={availableMembers} >
       <TableCell className={classes.cell} onClick={() => props.handleOpen(`${props.day}, ${props.time}`)}>
       </TableCell>
     </TimeTableTooltip>
