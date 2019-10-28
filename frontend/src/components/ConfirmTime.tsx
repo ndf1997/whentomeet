@@ -13,7 +13,7 @@ function ConfirmTime(props: InferProps<typeof ConfirmTime.propTypes>) {
         <Button color="primary" onClick={() => props.handleSelection('')}>
           Cancel
         </Button>
-        <Button color="primary" onClick={() => props.handleSelection('Wednesday, 11:30am')}>
+        <Button color="primary" onClick={() => props.handleSelection(props.time)}>
           Schedule
         </Button>
       </DialogActions>
