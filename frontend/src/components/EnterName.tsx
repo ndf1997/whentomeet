@@ -11,8 +11,10 @@ function EnterName(props: InferProps<typeof EnterName.propTypes>) {
   }
 
   function checkName() {
-    props.createNewUser(name);
-    setOpen(false);
+    if (name !== '') {
+      props.createNewUser(name);
+      setOpen(false);
+    }
   }
 
   return (
