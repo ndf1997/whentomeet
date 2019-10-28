@@ -41,6 +41,14 @@ function PollingDisplay(props: InferProps<typeof PollingDisplay.propTypes>){
         const temp = [...Answers];
         const index = temp.findIndex(answer => answer.value === value);
         temp[index].counter++;
+        for(let i=0; i<temp.length; i++){
+            if(temp[i].selected){
+                temp[i].counter--;
+                temp[i].selected = false;
+                break;
+            }
+        }
+        temp[index].selected = true;
         setAnswers(temp);
         console.log('incremented')
 
