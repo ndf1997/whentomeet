@@ -63,10 +63,10 @@ function MeetingDetails(props: InferProps<typeof MeetingDetails.propTypes>) {
         editHandler={editHandler}/>
       <PollingDisplay open={pollOpen} closePollingDialog={pollingCloseHandler} meeting={meeting} member={member}/>
       <Typography variant="h3" gutterBottom >
-        {description}
+        {title}
       </Typography>
       <Typography variant="body1" className={isSelected ? '' : classes.description} >
-        {title}
+        {description}
       </Typography>
       <Typography variant="body1">
         Location: {location}
